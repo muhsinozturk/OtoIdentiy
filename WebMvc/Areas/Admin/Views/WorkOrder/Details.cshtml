@@ -1,0 +1,252 @@
+﻿@model Application.DTOs.WorkOrder.WorkOrderDto
+
+<div class="container-fluid px-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>İş Emri Detayı <small class="text-muted">(#@Model.Id)</small></h2>
+        <a asp-action="Index" asp-route-vehicleId="@Model.VehicleId" class="btn btn-secondary">
+            ← İş Emri Listesine Dön
+        </a>
+    </div>
+
+    <!-- Başarı / Hata Bildirimleri -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <!-- Genel Bilgiler Kartı -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white fw-bold">
+            Genel Bilgiler
+        </div>
+        <div class="card-body">
+            <div class="row mb-2">
+                <div class="col-md-3"><strong>Açılış:</strong> @Model.OpenDate.ToString("g")</div>
+                <div class="col-md-3"><strong>Kapanış:</strong> @(Model.CloseDate?.ToString("g") ?? "-")</div>
+                <div class="col-md-3"><strong>Personel:</strong> @Model.EmployeeFullName</div>
+                <div class="col-md-3"><strong>Araç:</strong> @Model.VehiclePlate</div>
+            </div>
+            <div class="mb-2"><strong>Açıklama:</strong> @Model.Description</div>
+
+            <div class="row align-items-center mt-3">
+               
+                <div class="col-md-3">
+                    <div class="text-success fw-bold">
+                        Genel Toplam (İşçilik + KDV Dahil Parçalar): @Model.GrandTotal.ToString("N2") ₺
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Parçalar Tablosu -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-info text-white fw-bold">
+            Kullanılan Parçalar
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-bordered table-striped align-middle text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>Parça</th>
+                        <th>Miktar</th>
+                        <th>Birim Fiyat</th>
+                        <th>Ara Toplam</th>
+                        <th>KDV (%)</th>
+                        <th>KDV Tutarı</th>
+                        <th>Genel Toplam</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Parts.Any())
+                    {
+                        decimal toplamAra = 0, toplamKdv = 0, toplamGenel = 0;
+                        foreach (var p in Model.Parts)
+                        {
+                            toplamAra += p.SubTotal;
+                            toplamKdv += p.KdvAmount;
+                            toplamGenel += p.Total;
+
+                            <tr>
+                                <td>@p.StockName</td>
+                                <td>@p.Quantity</td>
+                                <td>@p.StockPrice.ToString("N2") ₺</td>
+                                <td>@p.SubTotal.ToString("N2") ₺</td>
+                                <td>@p.KdvRate %</td>
+                                <td>@p.KdvAmount.ToString("N2") ₺</td>
+                                <td>@p.Total.ToString("N2") ₺</td>
+                                <td>
+                                    <form asp-action="RemovePart" method="post" style="display:inline">
+                                        <input type="hidden" name="id" value="@p.Id" />
+                                        <input type="hidden" name="workOrderId" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                                onclick="return confirm('Bu parçayı silmek istiyor musunuz?');">
+                                            <i class="bi bi-trash"></i> Sil
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+
+                        <tr class="table-secondary fw-bold">
+                            <td colspan="3" class="text-end">Toplamlar:</td>
+                            <td>@toplamAra.ToString("N2") ₺</td>
+                            <td></td>
+                            <td>@toplamKdv.ToString("N2") ₺</td>
+                            <td>@toplamGenel.ToString("N2") ₺</td>
+                            <td></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">Henüz parça eklenmedi.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Yeni Parça Ekle -->
+    <div class="card border-0 shadow-sm mt-4">
+        <div class="card-header bg-light fw-semibold text-dark">
+            Yeni Parça Ekle
+        </div>
+
+        <div class="card-body">
+            <form asp-action="AddPart" method="post" class="small">
+                <input type="hidden" name="WorkOrderId" value="@Model.Id" />
+
+                <div class="row g-3">
+                    <!-- Sol Sütun -->
+                    <div class="col-lg-8 my-1">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Depo</label>
+                                <select id="DepotId" name="DepotId" class="form-select form-select-sm modern-select"
+                                        asp-items="@(new SelectList(ViewBag.Depots, "Id", "Name"))">
+                                    <option value="">Seçiniz...</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Stok</label>
+                                <select id="StockId" name="StockId" class="form-select form-select-sm modern-select">
+                                    <option value="">Önce depo seçiniz...</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Fiyat Tipi</label>
+                                <select id="StockPriceTypeId" name="StockPriceTypeId" class="form-select form-select-sm modern-select">
+                                    <option value="">Önce stok seçiniz...</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sağ Sütun -->
+                    <div class="col-lg-4 py-1">
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Miktar</label>
+                                <input type="number" step="0.01" id="Quantity" name="Quantity"
+                                       class="form-control form-control-sm modern-input" placeholder="0,00" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">KDV (%)</label>
+                                <input type="number" step="0.01" id="KdvRate" name="KdvRate"
+                                       class="form-control form-control-sm modern-input" value="18" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Toplam</label>
+                                <input type="text" id="PartTotal" class="form-control form-control-sm bg-light text-center fw-bold modern-input"
+                                       readonly placeholder="0,00 ₺" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-outline-success btn-sm px-4">
+                        <i class="bi bi-plus-circle me-1"></i> Parça Ekle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- JQuery Hesaplama Scripti -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let selectedPrice = 0;
+
+    $("#DepotId").change(function () {
+        var depotId = $(this).val();
+        var $stockDropdown = $("#StockId");
+        $stockDropdown.empty();
+
+        if (depotId) {
+            $.getJSON('@Url.Action("GetStocksByDepot", "WorkOrder", new { area = "Admin" })', { depotId: depotId })
+                .done(function (data) {
+                    $stockDropdown.append($('<option>').val('').text('Seçiniz...'));
+                    $.each(data, function (i, item) {
+                        $stockDropdown.append($('<option>').val(item.id).text(item.name));
+                    });
+                });
+        } else {
+            $stockDropdown.append($('<option>').val('').text('Önce depo seçiniz...'));
+        }
+    });
+
+    $("#StockId").change(function () {
+        var stockId = $(this).val();
+        var $priceTypeDropdown = $("#StockPriceTypeId");
+        $priceTypeDropdown.empty();
+
+        if (stockId) {
+            $.getJSON('@Url.Action("GetPriceTypesByStock", "WorkOrder", new { area = "Admin" })', { stockId: stockId })
+                .done(function (data) {
+                    $priceTypeDropdown.append($('<option>').val('').text('Seçiniz...'));
+                    $.each(data, function (i, item) {
+                        $priceTypeDropdown.append(
+                            $('<option>').val(item.id).data("price", item.price).text(item.name + " (" + item.price + "₺)")
+                        );
+                    });
+                });
+        } else {
+            $priceTypeDropdown.append($('<option>').val('').text('Önce stok seçiniz...'));
+        }
+    });
+
+    $("#StockPriceTypeId, #Quantity, #KdvRate").on("change input", calculateTotal);
+
+    function calculateTotal() {
+        let qty = parseFloat($("#Quantity").val()) || 0;
+        let kdv = parseFloat($("#KdvRate").val()) || 0;
+        selectedPrice = $("#StockPriceTypeId").find(":selected").data("price") || 0;
+
+        if (!selectedPrice || qty <= 0) {
+            $("#PartTotal").val("");
+            return;
+        }
+
+        let subtotal = qty * selectedPrice;
+        let kdvAmount = subtotal * (kdv / 100);
+        let total = subtotal + kdvAmount;
+
+        $("#PartTotal").val(`${total.toFixed(2)} ₺ (KDV Dahil)`);
+    }
+</script>

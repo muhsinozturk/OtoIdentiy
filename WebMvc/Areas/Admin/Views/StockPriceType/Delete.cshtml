@@ -1,0 +1,32 @@
+﻿@model Application.DTOs.StockPriceType.StockPriceTypeDeleteDto
+
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-danger text-white fw-bold">
+        "@Model.Name" fiyat tipi silinecek
+    </div>
+    <div class="card-body">
+        @if (Model.RelatedStocks.Any())
+        {
+            <p class="text-warning fw-bold">
+                Bu fiyat tipine bağlı aşağıdaki stoklar bulunmaktadır:
+            </p>
+            <ul>
+                @foreach (var stock in Model.RelatedStocks)
+                {
+                    <li>@stock</li>
+                }
+            </ul>
+            <p class="text-danger fw-bold">Yine de silmek istiyor musunuz?</p>
+        }
+        else
+        {
+            <p>Bu fiyat tipine bağlı stok bulunmamaktadır. Silme işlemini onaylayabilirsiniz.</p>
+        }
+
+        <form asp-action="DeleteConfirmed" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-danger">Evet, Sil</button>
+            <a asp-action="Index" class="btn btn-secondary">Vazgeç</a>
+        </form>
+    </div>
+</div>

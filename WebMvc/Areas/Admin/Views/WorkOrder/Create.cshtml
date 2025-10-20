@@ -1,0 +1,98 @@
+﻿@model Application.DTOs.WorkOrder.CreateWorkOrderDto
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-semibold text-dark">
+                <i class="bi bi-wrench-adjustable-circle me-2 text-secondary"></i>
+                Yeni İş Emri Aç
+            </h4>
+          
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Create" method="post" class="row g-3">
+                @if (ViewBag.Vehicle != null)
+                {
+                    <!-- Araç belli ise -->
+                    <input type="hidden" name="VehicleId" value="@ViewBag.Vehicle.Id" />
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Araç</label>
+                        <input type="text" class="form-control bg-light" value="@ViewBag.Vehicle.Plate" disabled />
+                    </div>
+                }
+                else
+                {
+                    <!-- Müşteri - Araç seçimi -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Müşteri</label>
+                        <select id="ActId" class="form-select shadow-sm"
+                                asp-items="@(new SelectList(ViewBag.Acts, "Id", "FullName"))">
+                            <option value="">Seçiniz...</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Araç</label>
+                        <select id="VehicleId" name="VehicleId" class="form-select shadow-sm">
+                            <option value="">Önce müşteri seçiniz...</option>
+                        </select>
+                    </div>
+                }
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Personel</label>
+                    <select name="EmployeeId" class="form-select shadow-sm"
+                            asp-items="@(new SelectList(ViewBag.Employees, "Id", "FullName"))">
+                        <option value="">Seçiniz...</option>
+                    </select>
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label fw-semibold">Açıklama</label>
+                    <textarea name="Description" class="form-control shadow-sm" rows="3"
+                              placeholder="İş emri hakkında kısa açıklama yazınız..."></textarea>
+                </div>
+
+                <div class="col-12 text-end mt-3">
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="bi bi-check-circle me-1"></i> Kaydet
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary px-4">
+                        <i class="bi bi-x-circle me-1"></i> İptal
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary px-4">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Geri Dön
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (ViewBag.Vehicle == null)
+{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#ActId").change(function () {
+            var actId = $(this).val();
+            var $vehicleDropdown = $("#VehicleId");
+            $vehicleDropdown.empty();
+
+            if (actId) {
+                $.getJSON('@Url.Action("GetVehiclesByAct", "WorkOrder", new { area = "Admin" })',
+                    { actId: actId })
+                    .done(function (data) {
+                        $vehicleDropdown.append($('<option>').val('').text('Seçiniz...'));
+                        $.each(data, function (i, item) {
+                            $vehicleDropdown.append(
+                                $('<option>').val(item.id).text(item.plate)
+                            );
+                        });
+                    });
+            } else {
+                $vehicleDropdown.append($('<option>').val('').text('Önce müşteri seçiniz...'));
+            }
+        });
+    </script>
+}

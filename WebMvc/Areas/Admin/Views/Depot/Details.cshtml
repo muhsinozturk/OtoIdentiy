@@ -1,0 +1,56 @@
+﻿@model List<Application.DTOs.Inventory.DepotInventorySummaryDto>
+
+<h2>@ViewBag.Depot.Name - Envanter Özeti</h2>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a asp-action="Index" class="btn btn-secondary">← Geri</a>
+
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
+        <i class="fa fa-plus"></i> Envanter Ekle
+    </button>
+</div>
+
+<table id="inventoryTable" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Kategori</th>
+            <th>Stok Adı</th>
+            <th>Marka</th>
+            <th>Model</th>
+            <th>Toplam Miktar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.StockGroupName</td>
+                <td>@item.StockName</td>
+                <td>@item.StockBrand</td>
+                <td>@item.StockModel</td>
+                <td>@item.TotalQuantity</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<a asp-action="Index" class="btn btn-secondary">Geri</a>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#inventoryTable').DataTable({
+                pageLength: 10,             // her sayfada 10 satır
+                order: [[0, 'asc']],        // ilk olarak kategoriye göre sırala
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json" // Türkçe dil desteği
+                }
+            });
+        });
+    </script>
+}

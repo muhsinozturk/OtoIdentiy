@@ -1,0 +1,66 @@
+﻿@model Application.DTOs.Depot.DepotDto
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-house-gear me-2"></i> Depo Düzenle
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Edit" method="post" novalidate>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-3">
+                    <!-- Depo No -->
+                    <div class="col-md-4">
+                        <label asp-for="No" class="form-label fw-semibold">Depo No</label>
+                        <input asp-for="No" class="form-control form-control-sm" placeholder="Depo numarası giriniz" />
+                        <span asp-validation-for="No" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Depo Adı -->
+                    <div class="col-md-8">
+                        <label asp-for="Name" class="form-label fw-semibold">Depo Adı</label>
+                        <input asp-for="Name" class="form-control form-control-sm" placeholder="Depo adını giriniz" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Açıklama -->
+                    <div class="col-md-12">
+                        <label asp-for="Description" class="form-label fw-semibold">Açıklama</label>
+                        <textarea asp-for="Description" rows="3" class="form-control form-control-sm" placeholder="Depo hakkında açıklama yazınız..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Şirket -->
+                    <div class="col-md-6">
+                        <label asp-for="CompanyId" class="form-label fw-semibold">Şirket</label>
+                        <div class="custom-select-wrapper">
+                            <select asp-for="CompanyId" class="form-select form-select-sm company-select">
+                                <option value="">Şirket seçiniz...</option>
+                                @foreach (var company in (List<Application.DTOs.Company.CompanyDto>)ViewBag.Companies)
+                                {
+                                    <option value="@company.Id" selected="@(company.Id == Model.CompanyId)">
+                                        @company.Name
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <span asp-validation-for="CompanyId" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle me-1"></i> İptal
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save me-1"></i> Güncelle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

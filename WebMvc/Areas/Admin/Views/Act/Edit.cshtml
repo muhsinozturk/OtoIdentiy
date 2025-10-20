@@ -1,0 +1,57 @@
+﻿@model Application.DTOs.Act.ActDto
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-person-gear me-2"></i> Müşteri Bilgilerini Düzenle
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Edit" method="post" novalidate>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-3">
+
+                    <!-- Ad Soyad -->
+                    <div class="col-md-6">
+                        <label asp-for="FullName" class="form-label fw-semibold">Ad Soyad</label>
+                        <input asp-for="FullName" class="form-control form-control-sm" placeholder="Müşteri adı soyadı" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- TC No -->
+                    <div class="col-md-6">
+                        <label asp-for="TcNo" class="form-label fw-semibold">TC No</label>
+                        <input asp-for="TcNo" class="form-control form-control-sm" maxlength="11" placeholder="11 haneli kimlik numarası" />
+                        <span asp-validation-for="TcNo" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Şirket -->
+                    <div class="col-md-6">
+                        <label asp-for="CompanyId" class="form-label fw-semibold">Şirket</label>
+                        <div class="custom-select-wrapper">
+                            <select asp-for="CompanyId"
+                                    class="form-select form-select-sm company-select"
+                                    asp-items="@(new SelectList(ViewBag.Companies, "Id", "Name"))">
+                                <option value="">Şirket seçiniz...</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="CompanyId" class="text-danger small"></span>
+                    </div>
+
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Geri
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save me-1"></i> Güncelle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+﻿@model Application.DTOs.StockGroup.CreateStockGroupDto
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-box-seam me-2"></i> Yeni Stok Grubu Ekle
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Create" method="post" novalidate>
+                <div class="row g-3">
+
+                    <!-- Grup Adı -->
+                    <div class="col-md-6">
+                        <label asp-for="Name" class="form-label fw-semibold">Grup Adı</label>
+                        <input asp-for="Name" class="form-control form-control-sm" placeholder="Grup adı giriniz" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Birim Tipi -->
+                    <div class="col-md-6">
+                        <label asp-for="UnitType" class="form-label fw-semibold">Birim Tipi</label>
+                        <input asp-for="UnitType" class="form-control form-control-sm" placeholder="Örn: Adet, Litre, Kilo" />
+                        <span asp-validation-for="UnitType" class="text-danger small"></span>
+                    </div>
+
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Geri
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i> Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+﻿@model Application.DTOs.WorkOrder.UpdateWorkOrderDto
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-clipboard-check me-2"></i> İş Emri Düzenle / Kapat
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Edit" asp-controller="WorkOrder" asp-area="Admin" method="post" novalidate>
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="VehicleId" />
+
+                <!-- Personel -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Personel</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted">
+                            <i class="bi bi-person-badge"></i>
+                        </span>
+                        <select asp-for="EmployeeId" class="form-select form-select-sm company-select"
+                                asp-items="@(new SelectList(ViewBag.Employees, "Id", "FullName"))">
+                            <option value="">Personel Seçiniz...</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="EmployeeId" class="text-danger small"></span>
+                </div>
+
+                <!-- Açıklama -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Açıklama</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted">
+                            <i class="bi bi-pencil-square"></i>
+                        </span>
+                        <textarea asp-for="Description" class="form-control form-control-sm" rows="3"
+                                  placeholder="İş emriyle ilgili açıklama giriniz..."></textarea>
+                    </div>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <!-- İşçilik Tutarı -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">İşçilik Tutarı (₺)</label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted">
+                            <i class="bi bi-cash-stack"></i>
+                        </span>
+                        <input asp-for="LaborCost" class="form-control form-control-sm" placeholder="Tutar giriniz" />
+                    </div>
+                    <span asp-validation-for="LaborCost" class="text-danger small"></span>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" asp-route-vehicleId="@Model.VehicleId" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Geri
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save me-1"></i> Güncelle / Kapat
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

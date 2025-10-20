@@ -1,0 +1,51 @@
+﻿@model Application.DTOs.Stock.StockDto
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card shadow-sm border-danger">
+        <div class="card-header bg-danger text-white fw-bold">
+            Stok Silme Onayı
+        </div>
+
+        <div class="card-body">
+            <p class="fs-5 text-danger fw-bold">
+                “@Model.Name” stok kartını silmek istediğinize emin misiniz?
+            </p>
+
+            <div class="border rounded p-3 mb-3 bg-light">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3">Stok Adı:</dt>
+                    <dd class="col-sm-9">@Model.Name</dd>
+
+                    <dt class="col-sm-3">Model:</dt>
+                    <dd class="col-sm-9">@Model.Model</dd>
+
+                    <dt class="col-sm-3">Grup:</dt>
+                    <dd class="col-sm-9">@Model.StockGroupName</dd>
+
+                    <dt class="col-sm-3">Şirket:</dt>
+                    <dd class="col-sm-9">@Model.CompanyName</dd>
+
+                  
+                </dl>
+            </div>
+
+            <div class="alert alert-warning">
+                <i class="fa fa-exclamation-triangle"></i>
+                Bu işlem <strong>stok kartını görünmez hale getirecek</strong> (soft delete).
+                İleride “Silinen Stoklar” sayfasından geri alabilirsiniz.
+            </div>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        Vazgeç
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash"></i> Evet, Sil
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,202 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+/* Detay partial kutusu */
+.detail-partial-box {
+    background-color: #f8f9fa !important; /* Ana tabloya göre bir ton koyu */
+    border-left: 4px solid rgba(13,110,253,0.2); /* Hafif mavi çizgi */
+    border-radius: 0.375rem;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.06);
+    margin: 8px 0 12px 0;
+    padding: 12px 16px;
+}
+
+/* Baþlýk */
+.detail-partial-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+}
+
+/* Küçük tablo görünümü */
+.detail-partial-box table {
+    font-size: 0.875rem;
+}
+
+.detail-partial-box thead {
+    background-color: #ffffff;
+    border-bottom: 2px solid rgba(0,0,0,0.05);
+}
+
+.detail-partial-box tbody tr {
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+/* Araç tablosu iþlemleri - pastel tarz */
+.vehicle-action-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    transition: all 0.15s ease-in-out;
+}
+
+    .vehicle-action-btn:hover {
+        background-color: #e9ecef;
+        color: #212529;
+        border-color: #adb5bd;
+    }
+
+    .vehicle-action-btn i {
+        font-size: 0.9rem;
+    }
+.customer-row {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+    /* Hover olunca satýr daha belirgin olsun */
+    .customer-row:hover {
+        background-color: #f9fafb;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    /* Son satýrýn altýna çizgi ekleme */
+    .customer-row:last-of-type {
+        border-bottom: none;
+    }
+
+/* Detay satýrý daha yumuþak dursun */
+.details-row {
+    background-color: #f8f9fa;
+}
+.customer-row:nth-child(even) {
+    background-color: #f9fafb; /* çok açýk gri */
+}
+
+.customer-row:nth-child(odd) {
+    background-color: #ffffff; /* beyaz */
+}
+
+/* Hover efektiyle biraz vurgulama */
+.customer-row:hover {
+    background-color: #f1f3f5; /* soft gri ton */
+    transition: background-color 0.2s ease-in-out;
+}
+/* Þirket seçimi için sade ama þýk select tasarýmý */
+.company-select {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 6px 30px 6px 10px;
+    font-size: 0.9rem;
+    color: #495057;
+    appearance: none; /* tarayýcý varsayýlan okunu kaldýr */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%236c757d' viewBox='0 0 16 16'%3e%3cpath d='M1.5 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 14px;
+    transition: all 0.2s ease-in-out;
+}
+
+    .company-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.15rem rgba(13,110,253,.15);
+        outline: none;
+    }
+
+    /* Hover efekti */
+    .company-select:hover {
+        border-color: #adb5bd;
+    }
+
+    /* "Seçiniz" option'ý için gri ton */
+    .company-select option[value=""] {
+        color: #6c757d;
+    }
+/* Modern sade form stili */
+.modern-select,
+.modern-input {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.875rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #fff;
+}
+
+    .modern-select:focus,
+    .modern-input:focus {
+        border-color: #6c757d;
+        box-shadow: 0 0 0 0.15rem rgba(108, 117, 125, 0.2);
+        outline: none;
+    }
+
+/* Tüm input/select yüksekliklerini eþitle */
+.form-select-sm,
+.form-control-sm {
+    height: 36px !important;
+}
+
+/* Label’larý hizala */
+.form-label {
+    margin-bottom: 4px;
+    color: #495057;
+    font-weight: 500;
+}
+
+/* Buton uyumu */
+.btn-outline-success {
+    border-width: 1px;
+    font-size: 0.85rem;
+}
+
+/* Dikey hizalamayý düzgün göster */
+@media (min-width: 992px) {
+    .align-items-end > .col-md-4 {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+}
+.form-select, .form-control {
+    border-radius: 6px;
+    border: 1px solid #dcdcdc;
+}
+
+label.form-label {
+    color: #333;
+}
+
+.card-header {
+    font-size: 1.1rem;
+}

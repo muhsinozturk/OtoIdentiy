@@ -1,0 +1,23 @@
+﻿@model Application.DTOs.StockPrice.StockPriceDto
+
+<div class="container mt-4">
+    <div class="card border-danger shadow-sm">
+        <div class="card-header bg-danger text-white fw-bold">
+            Fiyat Silme Onayı
+        </div>
+        <div class="card-body">
+            <p>
+                <strong>@Model.StockName</strong> stok kartına ait
+                <strong>@Model.StockPriceTypeName</strong> fiyat kaydını silmek istiyor musunuz?
+            </p>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="StockId" />
+
+                <button type="submit" class="btn btn-danger">Evet, Sil</button>
+                <a asp-action="Index" asp-route-stockId="@Model.StockId" class="btn btn-secondary">Vazgeç</a>
+            </form>
+        </div>
+    </div>
+</div>

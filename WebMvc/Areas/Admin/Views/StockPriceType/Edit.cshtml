@@ -1,0 +1,59 @@
+﻿@model Application.DTOs.StockPriceType.StockPriceTypeDto
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-pencil-square me-2"></i> Fiyat Tipi Düzenle
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Edit" method="post" novalidate>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-3">
+                    <!-- Ad -->
+                    <div class="col-md-6">
+                        <label asp-for="Name" class="form-label fw-semibold">Ad</label>
+                        <input asp-for="Name" class="form-control form-control-sm" placeholder="Fiyat tipi adı giriniz" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Kod -->
+                    <div class="col-md-6">
+                        <label asp-for="Code" class="form-label fw-semibold">Kod</label>
+                        <input asp-for="Code" class="form-control form-control-sm" placeholder="Kısa kod (örnek: PERAKENDE, BAYİ)" />
+                        <span asp-validation-for="Code" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Şirket -->
+                    <div class="col-md-6">
+                        <label asp-for="CompanyId" class="form-label fw-semibold">Şirket</label>
+                        <div class="custom-select-wrapper">
+                            <select asp-for="CompanyId" class="form-select form-select-sm company-select">
+                                <option value="">Şirket seçiniz...</option>
+                                @foreach (var company in (List<Application.DTOs.Company.CompanyDto>)ViewBag.Companies)
+                                {
+                                    <option value="@company.Id" selected="@(company.Id == Model.CompanyId)">
+                                        @company.Name
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <span asp-validation-for="CompanyId" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Geri
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save me-1"></i> Güncelle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

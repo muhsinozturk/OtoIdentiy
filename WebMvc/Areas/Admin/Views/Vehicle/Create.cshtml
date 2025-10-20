@@ -1,0 +1,35 @@
+﻿@model Application.DTOs.Vehicle.CreateVehicleDto
+
+<h2>Yeni Araç Ekle</h2>
+
+<form asp-action="Create" method="post">
+    <input type="hidden" asp-for="ActId" />
+
+    <div class="mb-3">
+        <label class="form-label">Plaka</label>
+        <input asp-for="Plate" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Marka</label>
+        <input asp-for="Brand" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Model</label>
+        <input asp-for="Model" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Model Yılı</label>
+        <input asp-for="ModelYear" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Açıklama</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-area="Admin" asp-controller="Act" asp-action="Details" asp-route-id="@Model.ActId" class="btn btn-secondary">Geri</a>
+</form>

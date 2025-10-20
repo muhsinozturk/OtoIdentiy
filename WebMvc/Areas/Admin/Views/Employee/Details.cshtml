@@ -1,0 +1,13 @@
+﻿@model Application.DTOs.Emplooye.EmployeeDto
+
+@{
+    ViewData["Title"] = "Çalışan Detayı";
+}
+
+<h2>@Model.FullName Detayları</h2>
+
+<p><strong>ID:</strong> @Model.Id</p>
+<p><strong>Şirket:</strong> @Model.CompanyId</p>
+<p><strong>Tip:</strong> @Model.Type</p>
+
+<a asp-action="Index" class="btn btn-secondary">Geri</a>
