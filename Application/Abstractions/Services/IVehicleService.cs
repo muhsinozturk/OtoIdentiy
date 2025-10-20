@@ -8,6 +8,7 @@ namespace Application.Abstractions.Services
     public interface IVehicleService
     {
         Task<List<VehicleDto>> GetAllByActIdAsync(int actId);
+        Task<List<VehicleDto>> GetAllAsync();
         Task<VehicleDto?> GetByIdAsync(int id);
         Task<VehicleDto> CreateAsync(CreateVehicleDto dto);
         Task UpdateAsync(VehicleDto dto);

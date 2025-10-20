@@ -1,0 +1,77 @@
+﻿@using Application.ViewModels
+
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+@{
+    ViewData["Title"] = "SignUp";
+}
+
+@model SignUpViewModel
+
+ @section Scripts
+ {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+ }
+
+
+
+
+<div class="container mt-5">
+
+
+    @if (TempData["SuccessMessage"] !=null)
+    {
+        <div class="alert alert-info" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+  
+
+
+
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0 rounded-3">
+                <h1>Kullanıcı Kayıt Formu</h1>
+                <div class="card-body p-4">
+                    <form asp-controller="Home" asp-action="SignUp" method="post">
+                        <div class="mb-3">
+                            <label asp-for="UserName" class="form-label fw-bold"></label>
+                            <input asp-for="UserName" class="form-control" placeholder="Kullanıcı Adınız" />
+                            <span asp-validation-for="UserName" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold"></label>
+                            <input asp-for="Email" class="form-control" placeholder="E-posta adresiniz" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label fw-bold"></label>
+                            <input asp-for="Phone" class="form-control" placeholder="Telefon" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label fw-bold"></label>
+                            <input asp-for="Password" class="form-control" type="password" placeholder="Şifreniz" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="PasswordConfirm" class="form-label fw-bold"></label>
+                            <input asp-for="PasswordConfirm" class="form-control" type="password" placeholder="Şifreniz" />
+                            <span asp-validation-for="PasswordConfirm" class="text-danger small"></span>
+                        </div>
+
+                       
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-box-arrow-in-right"></i> Giriş Yap
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,4 @@
 ﻿using Application.DTOs.Stock;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Application.Abstractions.Services
 {

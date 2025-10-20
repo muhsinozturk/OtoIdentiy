@@ -15,13 +15,24 @@ namespace WebMvc.Areas.Admin.Controllers
             _vehicleService = vehicleService;
             _actService = actService;
         }
-        public async Task<IActionResult> Index(int actId)
+        public async Task<IActionResult> Index(int? actId)
         {
-            var vehicles = await _vehicleService.GetAllByActIdAsync(actId);
-            var act = await _actService.GetByIdAsync(actId);
+            var vehicles = actId.HasValue && actId > 0
+                ? await _vehicleService.GetAllByActIdAsync(actId.Value)
+                : await _vehicleService.GetAllAsync();
 
-            ViewBag.ActId = actId;
-            ViewBag.ActName = act?.FullName;
+            // Müşteri bilgisi sadece actId varsa alınsın
+            if (actId.HasValue && actId > 0)
+            {
+                var act = await _actService.GetByIdAsync(actId.Value);
+                ViewBag.ActName = act?.FullName;
+                ViewBag.ActId = actId;
+            }
+            else
+            {
+                ViewBag.ActName = "Tüm Araçlar";
+                ViewBag.ActId = null;
+            }
 
             return View(vehicles);
         }

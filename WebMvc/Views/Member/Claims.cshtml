@@ -1,0 +1,29 @@
+﻿@using Application.ViewModels
+
+@model List<ClaimViewModel> 
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Issuer</th>
+            <th>type</th>
+            <th>Value</th>
+         
+        </tr>
+    </thead>
+
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Issuer</td>
+                <td>@item.Type</td>
+                <td>@item.Value</td>
+              
+            </tr>
+        }
+
+    </tbody>
+
+</table>

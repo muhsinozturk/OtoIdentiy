@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Infrastructure.Data;
 
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+public class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, string>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }

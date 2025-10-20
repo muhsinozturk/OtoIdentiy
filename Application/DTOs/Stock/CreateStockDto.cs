@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace Application.DTOs.Stock;
 
 public class CreateStockDto
 {
+    [Required(ErrorMessage = "Lütfen stok grubunu seçiniz.")]
     public int? StockGroupId { get; set; }
     public int? CompanyId { get; set; }
     public string Code { get; set; }

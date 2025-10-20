@@ -1,0 +1,41 @@
+﻿@using Application.ViewModels
+
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@model UserViewModel
+
+<div class="row">
+
+    <div class="col-md-4 offset-md-4">
+        <user-picture-thumbnail picture-url="@Model.PictureUrl" style="width:300px"></user-picture-thumbnail>
+        
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1>Kullanıcı Bilgileri</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>Kullanıcı Adı</td>
+                    <td>Email</td>
+                    <td>Telefon Numarası</td>
+             
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.UserName</td>
+                    <td>@Model.Email</td>
+                    <td>@Model.Phone</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>

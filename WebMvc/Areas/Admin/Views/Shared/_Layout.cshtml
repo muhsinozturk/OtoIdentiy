@@ -37,13 +37,10 @@
             </ul>
 
             <!-- Right navbar links -->
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="fullscreen" href="#" role="button" title="Tam Ekran">
-                        <i class="fas fa-expand-arrows-alt"></i>
-                    </a>
-                </li>
+            <ul class="navbar-nav ml-auto" style="margin-right:20px">
+                <partial name="_NavbarLoginPanel"></partial>
             </ul>
+
         </nav>
         <!-- /.navbar -->
         <!-- Sidebar -->
@@ -62,6 +59,8 @@
                     </div>
                     <div class="info">
                         <a href="#" class="d-block fw-semibold">Muhsin Öztürk</a>
+
+                   
                     </div>
                 </div>
 
@@ -90,7 +89,37 @@
                                 <p>Dashboard</p>
                             </a>
                         </li>
+                        <li class="nav-item has-treeview menu-open">
+                            <!-- ✅ Menü açık kalsın -->
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-boxes"></i>
+                                <p>
+                                    Identity Yönetimi
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/Admin/Roles/RoleCreate" class="nav-link">
+                                        <i class="bi bi-tags nav-icon"></i>
+                                        <p>Rol Oluştur</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/Admin/Home/UserList" class="nav-link">
+                                        <i class="bi bi-tags nav-icon"></i>
+                                        <p>Kullancı Rolleri</p>
+                                    </a>
+                                </li>
 
+                                <li class="nav-item">
+                                    <a href="/Admin/Roles/Index" class="nav-link">
+                                        <i class="bi bi-cash-stack nav-icon"></i>
+                                        <p>Tüm Roller</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         <!-- Şirketler -->
                         <li class="nav-item">
                             <a href="/Admin/Company/Index" class="nav-link">
@@ -112,6 +141,13 @@
                             <a href="/Admin/Act/Index" class="nav-link">
                                 <i class="nav-icon fas fa-user-tie"></i>
                                 <p>Müşteriler</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/Admin/VEhicle/Index" class="nav-link">
+                                <i class="nav-icon fas fa-user-tie"></i>
+                                <p>Araçlar</p>
                             </a>
                         </li>
 
@@ -215,9 +251,38 @@
     </div>
 
     <!-- Scripts -->
+
     <script src="~/plugins/jquery/jquery.min.js" asp-append-version="true"></script>
     <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="~/dist/js/adminlte.min.js" asp-append-version="true"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Navbar içindeki dropdown linklerini bul
+        const dropdowns = document.querySelectorAll('.navbar-nav .dropdown-toggle');
+        dropdowns.forEach(function (el) {
+            el.addEventListener('click', function (e) {
+                e.preventDefault(); // link davranışını durdur
+                const menu = el.nextElementSibling;
+                if (menu && menu.classList.contains('show')) {
+                    menu.classList.remove('show');
+                } else {
+                    document.querySelectorAll('.navbar-nav .dropdown-menu.show')
+                        .forEach(m => m.classList.remove('show'));
+                    menu.classList.add('show');
+                }
+            });
+        });
+
+        // Sayfanın başka yerine tıklanınca dropdown’ı kapat
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.nav-item.dropdown')) {
+                document.querySelectorAll('.navbar-nav .dropdown-menu.show')
+                    .forEach(m => m.classList.remove('show'));
+            }
+        });
+    });
+</script>
+
 
     @RenderSection("Scripts", required: false)
 </body>

@@ -1,0 +1,35 @@
+﻿@using Application.ViewModels
+
+@model List<UserViewModel>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Roller</th>
+            <th>Rol işlemleri</th>
+        </tr>
+    </thead>
+
+
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>
+                    <user-role-names user-id="@user.Id"></user-role-names>
+                </td>
+                <td>
+                    <a asp-controller="Roles" asp-action="AssingRoleToUser" asp-route-id="@user.Id">Rol Ata</a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>

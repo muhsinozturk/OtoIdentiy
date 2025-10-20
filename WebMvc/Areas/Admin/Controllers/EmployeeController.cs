@@ -4,7 +4,7 @@ using Application.DTOs.Company;
 using Microsoft.AspNetCore.Mvc;
 using WebMvc.Areas.Admin.Controllers;
 
-namespace WebMvc.Controllers
+namespace WebMvc.Areas.Admin.Controllers
 {
     public class EmployeeController : AdminBaseController
     {

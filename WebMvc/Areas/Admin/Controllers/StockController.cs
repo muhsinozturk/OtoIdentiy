@@ -53,7 +53,7 @@ namespace WebMvc.Areas.Admin.Controllers
                 ViewBag.Groups = await _stockGroupService.GetAllAsync(); // hata olursa tekrar doldur
                 return View(dto);
             }
-
+           
             await _stockService.CreateAsync(dto);
             return RedirectToAction(nameof(Index));
         }

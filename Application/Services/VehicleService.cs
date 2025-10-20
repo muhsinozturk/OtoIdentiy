@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Repositories;
 using Application.Abstractions.Services;
+using Application.DTOs.Stock;
 using Application.DTOs.Vehicle;
 using AutoMapper;
 using Domain.Entities;
@@ -17,6 +18,11 @@ namespace Application.Services
             _mapper = mapper;
         }
 
+        public async Task<List<VehicleDto>> GetAllAsync()
+        {
+            var vehicles = await _unitOfWork.Vehicles.GetAllAsync();
+            return _mapper.Map<List<VehicleDto>>(vehicles);
+        }
         public async Task<List<VehicleDto>> GetAllByActIdAsync(int actId)
         {
             var vehicles = await _unitOfWork.Vehicles.FindAsync(v => v.ActId == actId);

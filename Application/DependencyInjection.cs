@@ -5,6 +5,7 @@ using Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
 
+
 namespace Application
 {
     public static class DependencyInjection
@@ -30,7 +31,8 @@ namespace Application
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<IStockGroupService, StockGroupService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
- 
+            services.AddScoped<IEmailService, EmailService>();
+
             return services;
         }
     }

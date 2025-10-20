@@ -84,7 +84,7 @@ namespace WebMvc.Areas.Admin.Controllers
                 await _service.AddOrUpdateMultipleAsync(priceList);
 
                 TempData["Success"] = "Fiyatlar başarıyla kaydedildi.";
-                return RedirectToAction("Details", "Stock", new { id = model.StockId });
+                return RedirectToAction("Index", "Stock", new { id = model.StockId });
             }
             catch (Exception ex)
             {

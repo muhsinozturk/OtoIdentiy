@@ -1,0 +1,33 @@
+﻿@using System.Security.Claims
+@if (User.Identity!.IsAuthenticated) //Kullancı loginse burayı göster
+{
+    <ul class="navbar-nav mx-5">
+        <li class="nav-item dropdown m-2">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                @User.Identity.Name
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item"asp-controller="Member" asp-action="Index">Profil</a></li>
+
+                <li><a class="dropdown-item" asp-controller="Member" asp-action="PasswordChange">Şifre Değiştir</a></li>
+                <li><a class="dropdown-item" asp-route-returnurl="/Home/Index" asp-controller="Member" asp-action="Logout">Çıkış Yap</a></li>
+                <li><a class="dropdown-item" asp-route-returnurl="/Home/Index" asp-controller="Member" asp-action="UserEdit">Kullanıcı Güncelle</a></li>
+                <li><a class="dropdown-item" asp-route-returnurl="/Home/Index" asp-controller="Member" asp-action="Claims">Claims</a></li>
+                @if (User.HasClaim(x => x.Type == ClaimTypes.Role && x.Value == "Admin"))//claim tipi rol olan ve değeri admin olan kullanıcılar için admin panelini göster
+                {
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Panel</a></li>
+                }
+
+            </ul>
+        </li>
+    </ul>
+}
+
+else
+{
+    <a class="btn btn-outline-success mx-1" asp-controller="home" asp-action="SignUp">Üye Kayıt</a>
+    <a class="btn btn-outline-success " asp-controller="home" asp-action="SignIn">Üye Giriş</a>
+
+}

@@ -1,9 +1,22 @@
 ﻿using Application;
+using Domain.OptionsModels;
+using Domain.PermissionsRoot;
 using Infrastructure;
-using Infrastructure.Identity;
 using Infrastructure.Data;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using System;
+using WebMvc.ClaimProvider;
+using WebMvc.Extenisons;
+using WebMvc.Models;
+
+using WebMvc.Requirements;
+using WebMvc.Seeds;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,84 +27,104 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 // Identity
-builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-
-// Identity şifre Ayarları büyük kücük zorunlu değil vs..
-builder.Services.Configure<IdentityOptions>(options =>
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options => // Token ömrünü 2 saate çıkarttık
 {
-    options.SignIn.RequireConfirmedEmail = false;
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 6;
+    options.TokenLifespan = TimeSpan.FromHours(2); // Token ömrü 2 saat
 });
 
-// Cookie Ayarları → restart sonrası tekrar şifre istesin
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));// Email ayarlarını configuration dosyasından alıp EmailSettings sınıfına bağla
+
+builder.Services.Configure<SecurityStampValidatorOptions>(options => // Güvenlik damgası doğrulama ayarları
+{
+    options.ValidationInterval = TimeSpan.FromMinutes(30); // Güvenlik damgası doğrulama aralığı 30 dakika
+});
+
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));// wwwroot klasörüne erişim için gerekli servis kaydı
+
+
+builder.Services.AddIdentityWithExt();// Identity servislerini ekle  EXTENİSON klasörüne taşıdık program cs cok kalabalık olduğu için
+
+builder.Services.AddScoped<IClaimsTransformation, UserClaimProvider>();// Claim provider servisinin DI kaydı
+builder.Services.AddScoped<IAuthorizationHandler, ExchangeExpireRequirementHandler>();// Authorization handler servisinin DI kaydı
+builder.Services.AddScoped<IAuthorizationHandler, ViolenceRequirementHandler>();// Authorization handler servisinin DI kaydı
+
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AnkaraPolicy", policy =>
+    {
+        policy.RequireClaim("city", "Ankara");
+    });
+
+    options.AddPolicy("ExchangePolicy", policy =>
+    {
+        policy.AddRequirements(new ExchangeExpireRequirement());
+    });
+
+    options.AddPolicy("ViolencePolicy", policy =>
+    {
+        policy.AddRequirements(new ViolenceRequirement() { ThresholdAge = 18 });
+    });
+
+    //Permission Policies
+
+    options.AddPolicy("OrderPermissionReadAndDelete", policy =>
+    {
+        policy.RequireClaim("permission", Permissions.Order.Read);
+
+        policy.RequireClaim("permission", Permissions.Order.Delete);
+
+        policy.RequireClaim("permission", Permissions.Stock.Delete);
+
+    });
+
+
+    options.AddPolicy("Permissions.Order.Read", policy =>
+    {
+        policy.RequireClaim("permission", Permissions.Order.Read);
+
+
+
+    });
+
+
+    options.AddPolicy("Permissions.Order.Delete", policy =>
+    {
+
+        policy.RequireClaim("permission", Permissions.Order.Delete);
+
+
+
+    });
+
+    options.AddPolicy("Permissions.Stock.Delete", policy =>
+    {
+
+        policy.RequireClaim("permission", Permissions.Stock.Delete);
+
+
+
+    });
+});
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/User/Login";       // giriş yapılmazsa buraya yönlendir
-    options.AccessDeniedPath = "/User/Login"; // yetki yoksa buraya yönlendir
-    options.Cookie.HttpOnly = true;          // JS erişemesin, güvenlik için
-    options.ExpireTimeSpan = TimeSpan.FromSeconds(5); // cookie sadece 5 saniye geçerli
-    options.SlidingExpiration = false;       // her istekte süre uzamasın
-    options.Cookie.IsEssential = true;       // GDPR için önemli cookie işareti
-});
-
-// SecurityStamp → her request’te cookie doğrulansın
-builder.Services.Configure<SecurityStampValidatorOptions>(options =>
-{
-    options.ValidationInterval = TimeSpan.Zero;
+    options.LoginPath = "/Home/SignIn";
+    options.LogoutPath = "/Member/Logout";
+    options.AccessDeniedPath = "/Home/AccessDenied";
+    options.Cookie.Name = "AspNetCoreIdentityAppCookie";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    options.SlidingExpiration = true;
+    options.AccessDeniedPath = "/Member/AccessDenied";
 });
 
 var app = builder.Build();
 
-// 🔹 Admin Seed
-using (var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope()) //
 {
-    var services = scope.ServiceProvider;
-    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-    var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
 
-    var adminEmail = "admin@site.com";
-    var adminPassword = "Admin123!";
+    await PermissionSeed.Seed(roleManager);
 
-    // Rol yoksa oluştur
-    if (!await roleManager.RoleExistsAsync("Admin"))
-    {
-        await roleManager.CreateAsync(new ApplicationRole { Name = "Admin" });
-    }
-
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-    if (adminUser == null)
-    {
-        adminUser = new ApplicationUser
-        {
-            UserName = adminEmail,
-            Email = adminEmail,
-            EmailConfirmed = true
-        };
-
-        var result = await userManager.CreateAsync(adminUser, adminPassword);
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(adminUser, "Admin");
-            Console.WriteLine("✅ Admin kullanıcı ve rol oluşturuldu.");
-        }
-        else
-        {
-            Console.WriteLine("❌ Hata: " + string.Join(", ", result.Errors.Select(e => e.Description)));
-        }
-    }
-    else
-    {
-        if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
-        {
-            await userManager.AddToRoleAsync(adminUser, "Admin");
-        }
-    }
 }
 
 if (!app.Environment.IsDevelopment())
@@ -101,11 +134,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthentication(); // Kimlik doğrulama middleware'i
+
+app.UseAuthorization(); // Yetkilendirme middleware'i
+
+app.MapStaticAssets();
+
 
 app.MapControllerRoute(
     name: "areas",
@@ -113,13 +149,8 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
-// Uygulama açıldığında otomatik olarak /Admin/Home/Index'e yönlendir
-app.MapGet("/", context =>
-{
-    context.Response.Redirect("/Admin/Home/Index");
-    return Task.CompletedTask;
-});
 
 app.Run();

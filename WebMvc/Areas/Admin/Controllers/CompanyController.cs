@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using WebMvc.Areas.Admin.Controllers;
 
-namespace WebUI.Controllers
+namespace WebMvc.Areas.Admin.Controllers
 {
     public class CompanyController : AdminBaseController
     {
