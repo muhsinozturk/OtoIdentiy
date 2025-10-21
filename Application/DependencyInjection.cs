@@ -1,9 +1,7 @@
-﻿using Application;
+﻿using Application.Abstractions.Services;
 using Application.Mappings;
-using Application.Abstractions.Services;
 using Application.Services;
 using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
 
 
 namespace Application

@@ -15,26 +15,40 @@ namespace WebMvc.Areas.Admin.Controllers
             _vehicleService = vehicleService;
             _actService = actService;
         }
-        public async Task<IActionResult> Index(int? actId)
+        public async Task<IActionResult> Index(int? actId, string? search, int page = 1, int pageSize = 10)
         {
             var vehicles = actId.HasValue && actId > 0
                 ? await _vehicleService.GetAllByActIdAsync(actId.Value)
                 : await _vehicleService.GetAllAsync();
 
-            // Müşteri bilgisi sadece actId varsa alınsın
+            // Arama filtresi
+            if (!string.IsNullOrEmpty(search))
+                vehicles = vehicles.Where(v => v.Plate.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            // Sayfalama
+            var totalCount = vehicles.Count;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            var pagedVehicles = vehicles.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            // ViewBag bilgileri
+            ViewBag.ActId = actId;
+            ViewBag.Search = search;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalCount = totalCount;
+            ViewBag.PageSize = pageSize;
+
             if (actId.HasValue && actId > 0)
             {
                 var act = await _actService.GetByIdAsync(actId.Value);
                 ViewBag.ActName = act?.FullName;
-                ViewBag.ActId = actId;
             }
             else
             {
                 ViewBag.ActName = "Tüm Araçlar";
-                ViewBag.ActId = null;
             }
 
-            return View(vehicles);
+            return View(pagedVehicles);
         }
 
 

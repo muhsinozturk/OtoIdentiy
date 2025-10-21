@@ -5,44 +5,48 @@
 
 <div class="container-fluid px-4 mt-4">
 
-    <!-- Başlık ve Buton -->
+    <!-- Başlık ve Arama -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-semibold mb-0">
             <i class="bi bi-car-front text-primary me-2"></i>
-            @if (ViewBag.ActName != null)
-            {
-                @ViewBag.ActName <span class="text-muted fs-6"> | Araçlar</span>
-            }
-            else
-            {
-                <text>Araçlar</text>
-            }
+            @ViewBag.ActName <span class="text-muted fs-6"> | Araçlar</span>
         </h2>
 
-        <div>
-            <a asp-action="Create"
-               asp-route-actId="@ViewBag.ActId"
-               class="btn btn-primary btn-sm shadow-sm">
-                <i class="bi bi-plus-circle me-1"></i> Yeni Araç Ekle
+       
+    
+    </div>
+    <div class="d-flex justify-content-sm-between">
+        <form asp-action="Index" method="get"  class="d-flex" style="margin-bottom:10px">
+            <input type="hidden" name="actId" value="@ViewBag.ActId" />
+            <input type="text" name="search" value="@ViewBag.Search" style="height:50px; width:55% ;  " class="form-control form-control me-2  mx-1"
+                   placeholder="Plakaya göre ara..." />
+            <button type="submit" style="height:50px" class="btn btn-sm btn-outline-primary ">
+                <i class="bi bi-search"></i> Ara
+            </button>
+        </form>
+
+        <!-- Ekleme ve Geri Dön -->
+        <div class="m-2 ">
+            <a asp-action="Create" asp-route-actId="@ViewBag.ActId"
+               class="btn btn-primary btn-sm me-2 shadow-sm">
+                <i class="bi bi-plus-circle me-1"></i> Yeni Araç
             </a>
-            <a asp-area="Admin"
-               asp-controller="Act"
-               asp-action="Details"
-               asp-route-id="@ViewBag.ActId"
-               class="btn btn-secondary btn-sm shadow-sm">
-                <i class="bi bi-arrow-left-circle me-1"></i> Müşteriye Dön
-            </a>
+            @if (ViewBag.ActId != null)
+            {
+                <a asp-area="Admin" asp-controller="Act" asp-action="Details" asp-route-id="@ViewBag.ActId"
+                   class="btn btn-secondary btn-sm shadow-sm">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Müşteriye Dön
+                </a>
+            }
         </div>
     </div>
 
-    <!-- Başarı / Hata Bildirimleri -->
 
-    <!-- Araç Tablosu -->
+    <!-- Tablo -->
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-header bg-primary text-white fw-semibold">
             <i class="bi bi-list-ul me-1"></i> Araç Listesi
         </div>
-
         <div class="card-body table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
@@ -67,20 +71,13 @@
                                 <td>@v.ModelYear</td>
                                 <td>@v.Description</td>
                                 <td class="text-center">
-                                    <a asp-action="Edit"
-                                       asp-route-id="@v.Id"
-                                       class="btn btn-sm btn-outline-warning me-1">
+                                    <a asp-action="Edit" asp-route-id="@v.Id" class="btn btn-sm btn-outline-warning me-1">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <a asp-action="Delete"
-                                       asp-route-id="@v.Id"
-                                       class="btn btn-sm btn-outline-danger me-1">
+                                    <a asp-action="Delete" asp-route-id="@v.Id" class="btn btn-sm btn-outline-danger me-1">
                                         <i class="bi bi-trash3"></i>
                                     </a>
-                                    <a asp-area="Admin"
-                                       asp-controller="WorkOrder"
-                                       asp-action="Index"
-                                       asp-route-vehicleId="@v.Id"
+                                    <a asp-area="Admin" asp-controller="WorkOrder" asp-action="Index" asp-route-vehicleId="@v.Id"
                                        class="btn btn-sm btn-outline-info">
                                         <i class="bi bi-wrench-adjustable"></i>
                                     </a>
@@ -100,4 +97,25 @@
             </table>
         </div>
     </div>
+
+    <!-- Sayfalama -->
+    @if (ViewBag.TotalPages > 0)
+    {
+        <nav class="mt-3">
+            <ul class="pagination justify-content-center mb-0">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-actId="@ViewBag.ActId"
+                           asp-route-page="@i"
+                           asp-route-search="@ViewBag.Search">
+                            @i
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
 </div>

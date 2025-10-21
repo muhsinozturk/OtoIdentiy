@@ -200,3 +200,97 @@ label.form-label {
 .card-header {
     font-size: 1.1rem;
 }
+/* === NAVBAR === */
+.navbar {
+    background-color: #f1f3f6 !important; /* açýk gri ton */
+    border-bottom: 1px solid #d0d5da;
+}
+
+    .navbar a.nav-link {
+        color: #1e293b !important;
+        font-weight: 500;
+    }
+
+        .navbar a.nav-link:hover,
+        .navbar a.nav-link.active {
+            background-color: #dbeafe !important;
+            color: #0d6efd !important;
+            border-radius: 4px;
+            transition: 0.2s;
+        }
+
+    /* === DROPDOWN === */
+    .navbar .dropdown-menu {
+        background-color: #f8fafc;
+        border: 1px solid #d1d5db;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .navbar .dropdown-item {
+        color: #1e293b;
+    }
+
+        .navbar .dropdown-item:hover {
+            background-color: #e2e8f0;
+            color: #0d6efd;
+        }
+
+/* === SIDEBAR === */
+.main-sidebar {
+    background-color: #2f3640 !important; /* koyu gri */
+    color: #e4e6eb;
+}
+
+    .main-sidebar .nav-link {
+        color: #d1d5db !important;
+        font-weight: 500;
+    }
+
+        .main-sidebar .nav-link:hover {
+            background-color: #3b4252 !important;
+            color: #ffffff !important;
+        }
+
+    .main-sidebar .nav-item.menu-open > a {
+        background-color: #1e40af !important;
+        color: #ffffff !important;
+    }
+
+    .main-sidebar .nav-treeview {
+        background-color: #3a3f47 !important;
+    }
+
+.nav-treeview .nav-link.active {
+    background-color: #2563eb !important;
+    color: #fff !important;
+}
+
+/* === LOGO ve USER PANEL === */
+.brand-link {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    border-bottom: 1px solid #334155;
+}
+
+.user-panel .info a {
+    color: #f1f5f9 !important;
+    font-weight: 600;
+}
+
+    .user-panel .info a:hover {
+        color: #60a5fa !important;
+    }
+
+/* === FOOTER === */
+.main-footer {
+    background-color: #f8f9fa !important;
+    color: #6b7280 !important;
+    border-top: 1px solid #d1d5db;
+}
+
+/* === GENEL === */
+body {
+    background-color: #f3f4f6;
+}
+
