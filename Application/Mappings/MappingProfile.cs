@@ -100,32 +100,25 @@ namespace Application.Mappings
 
             // Entity -> DTO
             CreateMap<Inventory, InventoryDto>()
-                .ForMember(dest => dest.DepotName, opt => opt.MapFrom(src => src.Depot.Name))
-                .ForMember(dest => dest.StockName, opt => opt.MapFrom(src => src.Stock.Name))
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
-                .ForMember(dest => dest.StockDto, opt => opt.MapFrom(src => src.Stock));
+        .ForMember(dest => dest.StockName, opt => opt.MapFrom(src => src.Stock.Name))
+        .ForMember(dest => dest.DepotName, opt => opt.MapFrom(src => src.Depot.Name))
+        .ReverseMap();
 
-            // DTO -> Entity
-            CreateMap<InventoryDto, Inventory>()
-                .ForMember(dest => dest.Depot, opt => opt.Ignore())
-                .ForMember(dest => dest.Stock, opt => opt.Ignore());
-
-            // CreateInventoryDto -> Entity
-            CreateMap<CreateInventoryDto, Inventory>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore()) // Id otomatik artar
-                .ForMember(dest => dest.Depot, opt => opt.Ignore())
-                .ForMember(dest => dest.Stock, opt => opt.Ignore());
+            CreateMap<CreateInventoryDto, Inventory>();
 
             // Entity -> CreateInventoryDto (örnek: form doldururken)
             CreateMap<Inventory, CreateInventoryDto>()
                 .ForMember(dest => dest.StockDto, opt => opt.MapFrom(src => src.Stock));
 
             CreateMap<IGrouping<StockGroup, Inventory>, DepotInventorySummaryDto>()
-        .ForMember(dest => dest.StockGroupName, opt => opt.MapFrom(src => src.Key.Name))
-        .ForMember(dest => dest.TotalQuantity, opt => opt.MapFrom(src => src.Sum(x => x.Quantity)))
-        .ForMember(dest => dest.StockName, opt => opt.MapFrom(src => src.First().Stock.Name))
-        .ForMember(dest => dest.StockModel, opt => opt.MapFrom(src => src.First().Stock.Model))
-        .ForMember(dest => dest.StockBrand, opt => opt.MapFrom(src => src.First().Stock.Brand)
+          .ForMember(dest => dest.StockGroupName, opt => opt.MapFrom(src => src.Key.Name))
+          .ForMember(dest => dest.StockName, opt => opt.MapFrom(src => src.First().Stock.Name))
+          .ForMember(dest => dest.StockModel, opt => opt.MapFrom(src => src.First().Stock.Model))
+          .ForMember(dest => dest.StockBrand, opt => opt.MapFrom(src => src.First().Stock.Brand))
+          // 🔹 Giriş ve çıkış toplamlarını ayrı hesapla
+          .ForMember(dest => dest.TotalIn, opt => opt.MapFrom(src => src.Where(x => x.IsInput).Sum(x => x.Quantity)))
+          .ForMember(dest => dest.TotalOut, opt => opt.MapFrom(src => src.Where(x => !x.IsInput).Sum(x => x.Quantity))
+
         );
 
 

@@ -18,7 +18,8 @@ public class UserRoleNamesTagHelper : TagHelper
         _userManager = userManager;
     }
 
-    public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+    
+    public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output) 
     {
       var user = await _userManager.FindByIdAsync(UserId);
         var roles = await _userManager.GetRolesAsync(user);

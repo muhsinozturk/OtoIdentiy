@@ -30,6 +30,7 @@ namespace Application
             services.AddScoped<IStockGroupService, StockGroupService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddHttpClient<IExternalApiService, ExternalApiService>();
 
             return services;
         }

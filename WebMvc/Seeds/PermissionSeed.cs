@@ -6,7 +6,7 @@ using WebMvc.Models;
 
 namespace WebMvc.Seeds;
 
-public  class PermissionSeed
+public  class PermissionSeed 
 {
     public static async Task Seed(RoleManager<AppRole> roleManager) 
     {
@@ -15,10 +15,10 @@ public  class PermissionSeed
         var hasAdminRole = await roleManager.RoleExistsAsync("AdminRole");
 
 
-
+        
         if (!hasBasicRole)
         {
-            await roleManager.CreateAsync(new AppRole() { Name = "BasicRole" });
+            await roleManager.CreateAsync(new AppRole() { Name = "BasicRole" }); 
 
             var basicRole =  (await roleManager.FindByNameAsync("BasicRole"))!;
 

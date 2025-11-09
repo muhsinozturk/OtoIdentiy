@@ -1,21 +1,30 @@
 ﻿using Application.DTOs.Stock;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.DTOs.Inventory;
-
-public class InventoryDto
+namespace Application.DTOs.Inventory
 {
-    public int Id { get; set; }
-    public int DepotId { get; set; }
-    public string? DepotName { get; set; }
-    public int StockId { get; set; }
-    public string? StockName { get; set; }
-    public decimal Quantity { get; set; }
-    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
-    public StockDto? StockDto { get; set; }
+    public class InventoryDto
+    {
+        public int Id { get; set; }
 
+        public int DepotId { get; set; }
+        public string? DepotName { get; set; }
+
+        public int StockId { get; set; }
+        public string? StockName { get; set; }
+
+        public decimal Quantity { get; set; }
+
+        // 🔹 Giriş/Çıkış türü
+        public bool IsInput { get; set; }
+
+        // 🔹 Açıklama (örnek: "Fatura çıkışı", "Satın alma girişi")
+        public string? Description { get; set; }
+
+        // 🔹 Tarih (işlem zamanı)
+        public DateTimeOffset CreatedAt { get; set; }
+
+
+        // 🔹 İlişkili stok detayları
+        public StockDto? StockDto { get; set; }
+    }
 }

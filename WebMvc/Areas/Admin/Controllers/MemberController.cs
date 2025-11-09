@@ -14,11 +14,11 @@ using System.Security.Claims;
 using WebMvc.Extenisons;
 using WebMvc.Models;
 
-namespace WebMvc.Controllers;
+namespace WebMvc.Areas.Admin.Controllers;
 
 
-[Authorize]
-public class MemberController : Controller
+[Authorize(Roles = "AdminRole,PersonelRole")]
+public class MemberController : AdminBaseController
 {
     private readonly SignInManager<AppUser> _signInManager;
     private readonly UserManager<AppUser> _userManager;

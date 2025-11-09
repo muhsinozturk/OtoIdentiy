@@ -9,6 +9,7 @@
         <div class="card-body">
             <form asp-action="Create" method="post" class="row g-3" novalidate>
                 <input type="hidden" name="DepotId" value="@Model.DepotId" />
+                <input type="hidden" name="IsInput" value="true" />
 
                 <!-- Stok Grubu -->
                 <div class="col-md-6">

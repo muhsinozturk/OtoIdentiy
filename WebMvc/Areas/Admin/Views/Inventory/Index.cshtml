@@ -1,154 +1,188 @@
-﻿@model List<Application.DTOs.Inventory.InventoryDto>
+﻿@model List<Application.DTOs.Inventory.DepotInventorySummaryDto>
+@{
+    ViewData["Title"] = "Depo Envanterleri";
+}
 
-
-<div class="d-flex justify-content-end my-1 mx-4">
-    @if (ViewBag.DepotId != null)
-    {
-        <a  asp-action="Create" asp-route-depotId="@ViewBag.DepotId" class="btn btn-success btn-sm">
-            <i class="bi bi-plus-circle me-1"></i> Yeni Envanter
-        </a>
-    }
-</div>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
 
 <div class="container-fluid px-4 mt-4">
-    <div class="card border-0 shadow-sm">
-        <div class="card-header bg-primary text-white fw-semibold d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-boxes me-2"></i> Depo Envanterleri</span>
 
-        
+    <!-- 🔹 Filtre Alanı -->
+    <form method="get" asp-action="Index" class="row g-3 align-items-end mb-4">
+        <div class="col-md-2">
+            <label class="form-label fw-semibold">Depo Seç</label>
+            <select name="depotId" class="form-select form-select-sm" asp-items="ViewBag.Depots">
+                <option value="">Seçiniz...</option>
+            </select>
         </div>
 
-        <div class="card-body">
-            <!-- Filtre -->
-            <form method="get" asp-action="Index" class="row g-3 align-items-end mb-4">
-                <div class="col-md-2 ">
-                    <label class="form-label fw-semibold ">Depo Seç</label>
-                    <select id="DepotSelect" name="depotId" class="form-select form-select-sm" asp-items="ViewBag.Depots">
-                        <option value="">Seçiniz...</option>
-                    </select>
-                </div>
+        <div class="col-md-2">
+            <label class="form-label fw-semibold">Başlangıç</label>
+            <input type="date" name="startDate" value="@ViewBag.StartDate" class="form-control form-control-sm" />
+        </div>
 
-                <div class="col-md-3 ">
-                    <label class="form-label fw-semibold ">Başlangıç Tarihi</label>
-                    <input type="date" name="startDate" value="@ViewBag.StartDate" class="form-control form-control-sm" />
-                </div>
+        <div class="col-md-2">
+            <label class="form-label fw-semibold">Bitiş</label>
+            <input type="date" name="endDate" value="@ViewBag.EndDate" class="form-control form-control-sm" />
+        </div>
 
-                <div class="col-md-3 ">
-                    <label class="form-label fw-semibold ">Bitiş Tarihi</label>
-                    <input type="date" name="endDate" value="@ViewBag.EndDate" class="form-control form-control-sm" />
-                </div>
+        <div class="col-md-3">
+            <label class="form-label fw-semibold">Ara (Ad / Kod / Marka / Model)</label>
+            <input type="text" name="search" value="@ViewBag.Search" class="form-control form-control-sm" placeholder="Stok ara..." />
+        </div>
 
-                <div class="col-md-3">
-                    <label class="form-label fw-semibold">Ara (Stok Adı / Kod / Marka / Model)</label>
-                    <input type="text" name="search" value="@ViewBag.Search" class="form-control form-control-sm" placeholder="Arama terimi yaz..." />
-                </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-outline-primary btn-sm w-100 mt-2">
+                <i class="bi bi-search"></i> Filtrele
+            </button>
+        </div>
+    </form>
 
-                <div class="col-md-1 d-flex justify-content-end">
-                    <button type="submit" class="btn btn-outline-primary btn-sm mt-2">
-                        <i class="bi bi-search me-1"></i> Filtrele
-                    </button>
-                </div>
-            </form>
+    @if (ViewBag.DepotId != null)
+    {
+        <!-- 🔹 Başlık -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-semibold">
+                <i class="bi bi-warehouse me-2 text-primary"></i>@ViewBag.DepotName Envanteri
+            </h4>
 
-            <!-- Tablo -->
-            @if (Model != null && Model.Any())
-            {
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle table-sm">
+            <a asp-action="Create" asp-route-depotId="@ViewBag.DepotId" class="btn btn-success btn-sm shadow-sm">
+                <i class="bi bi-plus-circle"></i> Yeni Stok Girişi
+            </a>
+        </div>
+
+        <!-- 🔹 Sekme Butonları -->
+        <div class="mb-3">
+            <button id="btnSummary" class="btn btn-outline-primary btn-sm me-2 active-tab">
+                <i class="bi bi-box-seam"></i> Tüm Stoklar
+            </button>
+            <button id="btnInputs" class="btn btn-outline-primary btn-sm me-2">
+                <i class="bi bi-box-arrow-in-down"></i> Stok Girişleri
+            </button>
+            <button id="btnOutputs" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-box-arrow-up"></i> Stok Çıkışları
+            </button>
+        </div>
+
+        <!-- 🔹 1. Tüm Stoklar -->
+        <div id="summarySection">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white fw-semibold">
+                    <i class="bi bi-boxes"></i> Stok Özeti
+                </div>
+                <div class="card-body table-responsive">
+                    <table id="summaryTable" class="table table-striped table-hover table-sm align-middle w-100">
                         <thead class="table-light">
                             <tr>
+                                <th>Kategori</th>
                                 <th>Stok Adı</th>
                                 <th>Marka</th>
                                 <th>Model</th>
-                                <th>Kodu</th>
-                                <th class="text-end">Miktar</th>
-                                <th class="text-center">Giriş Tarihi</th>
+                                <th class="text-end">Toplam Miktar</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var i in Model)
+                            @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td class="fw-semibold">@i.StockDto.Name</td>
-                                    <td>@i.StockDto.Brand</td>
-                                    <td>@i.StockDto.Model</td>
-                                    <td>@i.StockDto.Code</td>
-                                    <td class="text-end">@i.Quantity</td>
-                                    <td class="text-center text-muted">@i.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>@item.StockGroupName</td>
+                                    <td>@item.StockName</td>
+                                    <td>@item.StockBrand</td>
+                                    <td>@item.StockModel</td>
+                                    <td class="text-end fw-semibold">@item.NetQuantity</td>
                                 </tr>
                             }
                         </tbody>
                     </table>
                 </div>
-            }
-            else if (ViewBag.DepotId != null)
-            {
-                <div class="alert alert-info text-center small">
-                    <i class="bi bi-info-circle me-1"></i> Bu kriterlerde kayıt bulunamadı.
-                </div>
-            }
-            else
-            {
-                <div class="alert alert-secondary text-center small">
-                    <i class="bi bi-warehouse me-1"></i> Lütfen depo seçiniz.
-                </div>
-            }
-
-            <!-- Sayfalama -->
-            @if (ViewBag.TotalPages > 1)
-            {
-                <nav class="mt-3">
-                    <ul class="pagination justify-content-center mb-0">
-                        @if (ViewBag.CurrentPage > 1)
-                        {
-                            <li class="page-item">
-                                <a class="page-link"
-                                   asp-route-depotId="@ViewBag.DepotId"
-                                   asp-route-search="@ViewBag.Search"
-                                   asp-route-startDate="@ViewBag.StartDate"
-                                   asp-route-endDate="@ViewBag.EndDate"
-                                   asp-route-page="@(ViewBag.CurrentPage - 1)">‹ Önceki</a>
-                            </li>
-                        }
-
-                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                        {
-                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                                <a class="page-link"
-                                   asp-route-depotId="@ViewBag.DepotId"
-                                   asp-route-search="@ViewBag.Search"
-                                   asp-route-startDate="@ViewBag.StartDate"
-                                   asp-route-endDate="@ViewBag.EndDate"
-                                   asp-route-page="@i">@i</a>
-                            </li>
-                        }
-
-                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
-                        {
-                            <li class="page-item">
-                                <a class="page-link"
-                                   asp-route-depotId="@ViewBag.DepotId"
-                                   asp-route-search="@ViewBag.Search"
-                                   asp-route-startDate="@ViewBag.StartDate"
-                                   asp-route-endDate="@ViewBag.EndDate"
-                                   asp-route-page="@(ViewBag.CurrentPage + 1)">Sonraki ›</a>
-                            </li>
-                        }
-                    </ul>
-                </nav>
-            }
+            </div>
         </div>
-    </div>
+
+        <!-- 🔹 2. Stok Girişleri -->
+        <div id="inputsSection" style="display:none;">
+            <partial name="_InventoryInputs" model="(List<Application.DTOs.Inventory.InventoryDto>)ViewBag.Inputs" />
+        </div>
+
+        <!-- 🔹 3. Stok Çıkışları -->
+        <div id="outputsSection" style="display:none;">
+            <partial name="_InventoryOutputs" model="(List<Application.DTOs.Inventory.InventoryDto>)ViewBag.Outputs" />
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-secondary text-center">
+            <i class="bi bi-info-circle"></i> Lütfen bir depo seçiniz.
+        </div>
+    }
 </div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
     <script>
-        $("#DepotSelect").change(function () {
-            const depotId = $(this).val();
-            if (depotId)
-                window.location.href = '@Url.Action("Index", "Inventory", new { area = "Admin" })' + '?depotId=' + depotId;
-            else
-                window.location.href = '@Url.Action("Index", "Inventory", new { area = "Admin" })';
+        $(document).ready(function () {
+
+            // 🔹 Tüm tabloların genişlikleri tam olsun
+            $("table").css("width", "100%");
+
+            // 🔹 Ana tablo (Tüm Stoklar)
+            $("#summaryTable").DataTable({
+                pageLength: 10,
+                responsive: true,
+                autoWidth: false,   // genişliği DataTables hesaplamasın
+                scrollX: true,      // geniş tabloyu kaydırılabilir yap
+                order: [[0, "asc"]],
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json"
+                }
+            });
+
+            // 🔹 Partial tablolara DataTables uygula (Stok Giriş / Çıkış)
+            $("#inputsSection table, #outputsSection table").each(function () {
+                $(this).DataTable({
+                    pageLength: 10,
+                    responsive: true,
+                    autoWidth: false,
+                    scrollX: true,
+                    order: [[2, "desc"]],
+                    language: {
+                        url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json"
+                    }
+                });
+            });
+
+            // 🔹 Sekme renkleri (tek renk: mavi)
+            $("#btnSummary, #btnInputs, #btnOutputs").click(function () {
+                $("#btnSummary, #btnInputs, #btnOutputs")
+                    .removeClass("btn-primary text-white active-tab")
+                    .addClass("btn-outline-primary");
+
+                $(this)
+                    .removeClass("btn-outline-primary")
+                    .addClass("btn-primary text-white active-tab");
+            });
+
+            // 🔹 Sekme görünürlük kontrolü
+            $("#btnSummary").click(function () {
+                $("#summarySection").show();
+                $("#inputsSection, #outputsSection").hide();
+            });
+
+            $("#btnInputs").click(function () {
+                $("#inputsSection").show();
+                $("#summarySection, #outputsSection").hide();
+            });
+
+            $("#btnOutputs").click(function () {
+                $("#outputsSection").show();
+                $("#summarySection, #inputsSection").hide();
+            });
         });
     </script>
+
+
 }

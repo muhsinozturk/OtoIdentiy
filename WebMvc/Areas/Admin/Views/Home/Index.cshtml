@@ -1,1 +1,163 @@
-﻿
+﻿@{
+    ViewData["Title"] = "Yönetim Paneli - Dashboard";
+}
+
+<div class="row mt-4">
+    <!-- Döviz -->
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm border-0 bg-light">
+            <div class="card-body">
+                <h5>Döviz Kurları</h5>
+                <p>USD: <strong>@(ViewBag.Currency?.USD.ToString("N2") ?? "0") ₺</strong></p>
+                <p>EUR: <strong>@(ViewBag.Currency?.EUR.ToString("N2") ?? "0") ₺</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hava Durumu -->
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm border-0 bg-light">
+            <div class="card-body">
+                <h5>@ViewBag.Weather.City Hava Durumu</h5>
+                <p>@ViewBag.Weather.Description</p>
+                <p><strong>@ViewBag.Weather.Temperature</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Altın -->
+    <div class="col-md-4">
+        <div class="card text-center shadow-sm border-0 bg-light">
+            <div class="card-body">
+                <h5>Altın Fiyatları</h5>
+                <p>Gram: <strong>@(ViewBag.Gold?.Gram ?? "0") ₺</strong></p>
+                <p>Çeyrek: <strong>@(ViewBag.Gold?.Quarter ?? "0") ₺</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Diğer dashboard verileri (ciro, müşteri, vs.) -->
+<!-- ... mevcut kartlar + grafiğin -->
+
+
+<div class="container-fluid px-4 mt-4">
+
+    <h2 class="mb-4">
+        <i class="bi bi-speedometer2 text-primary"></i> Genel Durum
+    </h2>
+
+    <!-- 📊 Genel Kartlar -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 bg-primary text-white">
+                <div class="card-body">
+                    <h5>Toplam İş Emri</h5>
+                    <h3>@ViewBag.TotalWorkOrders</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 bg-success text-white">
+                <div class="card-body">
+                    <h5>Toplam Gelir</h5>
+                    <h3>@ViewBag.TotalRevenue.ToString("N2") ₺</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 bg-info text-white">
+                <div class="card-body">
+                    <h5>Bugünkü Ciro</h5>
+                    <h3>@ViewBag.TodayRevenue.ToString("N2") ₺</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 bg-secondary text-white">
+                <div class="card-body">
+                    <h5>Toplam Personel</h5>
+                    <h3>@ViewBag.EmployeeCount</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📊 Diğer İstatistikler -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 bg-warning text-dark">
+                <div class="card-body">
+                    <h5>Müşteri Sayısı</h5>
+                    <h3>@ViewBag.CustomerCount</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-0 bg-danger text-white">
+                <div class="card-body">
+                    <h5>Araç Sayısı</h5>
+                    <h3>@ViewBag.VehicleCount</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 💹 Aylık Gelir Grafiği -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-dark text-white fw-bold">
+            <i class="bi bi-graph-up"></i> Aylık Gelir Grafiği
+        </div>
+        <div class="card-body">
+            <canvas id="revenueChart" style="height:300px;"></canvas>
+        </div>
+    </div>
+
+
+
+</div>
+
+@using Newtonsoft.Json
+@{
+    var monthlyRevenue = ((IEnumerable<dynamic>)ViewBag.MonthlyRevenue).ToList();
+
+    var labels = Html.Raw(JsonConvert.SerializeObject(
+        monthlyRevenue.Select(x => (string)x.Month).ToList()
+    ));
+
+    var data = Html.Raw(JsonConvert.SerializeObject(
+        monthlyRevenue.Select(x => (decimal)x.Total).ToList()
+    ));
+}
+<script>
+    const ctx = document.getElementById('revenueChart');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @labels,
+            datasets: [{
+                label: 'Aylık Ciro (₺)',
+                data: @data,
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true },
+                tooltip: { mode: 'index', intersect: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>

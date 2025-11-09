@@ -22,7 +22,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // MVC
 builder.Services.AddControllersWithViews();
-
+// HttpClient
+builder.Services.AddHttpClient();
 // Katman bağımlılıkları
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
@@ -109,12 +110,12 @@ builder.Services.AddAuthorization(options =>
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Home/SignIn";
-    options.LogoutPath = "/Member/Logout";
+    options.LogoutPath = "/Admin/Member/Logout";
     options.AccessDeniedPath = "/Home/AccessDenied";
     options.Cookie.Name = "AspNetCoreIdentityAppCookie";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
     options.SlidingExpiration = true;
-    options.AccessDeniedPath = "/Member/AccessDenied";
+    options.AccessDeniedPath = "/Admin/Member/AccessDenied";
 });
 
 var app = builder.Build();

@@ -20,38 +20,35 @@ namespace Application.Services
 
         public async Task<InvoiceDto> CreateFromWorkOrderAsync(int workOrderId)
         {
-            // İş emrini detaylı çek
+            // 🔹 İş emrini al
             var workOrder = await _unitOfWork.WorkOrders.GetDetailsAsync(workOrderId);
             if (workOrder == null)
                 throw new Exception("İş emri bulunamadı.");
 
-            // 📌 İş emri kapalı mı?
             if (workOrder.CloseDate == null)
                 throw new Exception("İş emri kapatılmadan fatura kesilemez.");
 
-            // 🔁 Zaten fatura var mı?
             var existingInvoice = await _unitOfWork.Invoices.Query()
                 .FirstOrDefaultAsync(i => i.WorkOrderId == workOrder.Id);
 
             if (existingInvoice != null)
                 throw new Exception("Bu iş emri için zaten fatura kesilmiş.");
 
-            // 🧾 Yeni fatura oluştur
+            // 🧾 Yeni fatura
             var invoice = new Invoice
             {
                 WorkOrderId = workOrder.Id,
                 Date = DateTime.Now,
-                LaborCost = workOrder.LaborCost, // ✅ işçilik eklendi
+                LaborCost = workOrder.LaborCost,
                 Items = new List<InvoiceItem>()
             };
 
             decimal subTotal = 0;
             decimal totalVat = 0;
 
-            // 🔹 Parçaları işle
+            // 🔹 Faturadaki kalemleri oluştur
             foreach (var part in workOrder.Parts)
             {
-                // Fiyat bul
                 var unitPrice = await _unitOfWork.StockPrices.Query()
                     .Where(sp => sp.StockId == part.StockId && sp.StockPriceTypeId == part.StockPriceTypeId)
                     .Select(sp => sp.Price)
@@ -63,9 +60,7 @@ namespace Application.Services
 
                 var lineSubTotal = part.Quantity * unitPrice;
                 var vatAmount = lineSubTotal * (vatRate / 100);
-                var lineTotal = lineSubTotal + vatAmount;
 
-                // Kalem ekle
                 invoice.Items.Add(new InvoiceItem
                 {
                     StockId = part.StockId,
@@ -79,26 +74,39 @@ namespace Application.Services
 
                 subTotal += lineSubTotal;
                 totalVat += vatAmount;
+            }
 
-                // Stok düş (şimdilik kontrolsüz)
+            // 🔹 Toplam hesapla
+            invoice.Total = subTotal + totalVat + workOrder.LaborCost;
+
+            // 🧾 Önce faturayı kaydet → ID al
+            await _unitOfWork.Invoices.AddAsync(invoice);
+            await _unitOfWork.CommitAsync(); // ✅ artık invoice.Id doldu
+
+            // 🔹 Şimdi stoktan düş ve hareket oluştur
+            foreach (var part in workOrder.Parts)
+            {
+                // stoktan düş
                 var inventory = await _unitOfWork.Inventories.Query()
                     .FirstOrDefaultAsync(i => i.StockId == part.StockId && i.DepotId == part.DepotId);
 
-                if (inventory != null)
+           
+
+                // çıkış hareketi oluştur
+                var movement = new Inventory
                 {
-                    inventory.Quantity -= part.Quantity;
-                    _unitOfWork.Inventories.Update(inventory);
-                }
+                    DepotId = part.DepotId,
+                    StockId = part.StockId,
+                    Quantity = part.Quantity,
+                    IsInput = false,
+                    CreatedAt = DateTime.Now,
+                    Description = $"Fatura #{invoice.Id} çıkışı (İş Emri #{workOrder.Id})"
+                };
+
+                await _unitOfWork.Inventories.AddAsync(movement);
             }
 
-            // 🔸 Toplam hesapla (işçilik dahil)
-            var total = subTotal + totalVat + workOrder.LaborCost;
-
-            invoice.Total = total;
-
-            // Kaydet
-            await _unitOfWork.Invoices.AddAsync(invoice);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync(); // ✅ ikinci commit → çıkışlar kaydedilir
 
             return _mapper.Map<InvoiceDto>(invoice);
         }

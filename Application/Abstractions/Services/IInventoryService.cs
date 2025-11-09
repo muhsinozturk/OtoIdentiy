@@ -12,8 +12,14 @@ public interface IInventoryService
 {
     Task<List<InventoryDto>> GetByDepotIdAsync(int depotId);
     Task<List<StockDto>> GetByGroupIdAsync(int groupId);
-    Task<InventoryDto> CreateAsync(CreateInventoryDto dto);
+    Task CreateAsync(CreateInventoryDto dto);
     Task<List<DepotInventorySummaryDto>> GetDepotSummaryAsync(int depotId);
+
+    Task<List<InventoryDto>> GetByFilterAsync(int depotId, DateTime? startDate, DateTime? endDate, bool? isInput, string? search);
     Task UpdateAsync(InventoryDto dto);
     Task DeleteAsync(int id);
+    Task<decimal> GetCurrentStockAsync(int stockId, int depotId);
+
+    Task<InventoryDto?> GetByDepotAndStockAsync(int depotId, int stockId);
+
 }

@@ -80,35 +80,38 @@ namespace Application.Services
         }
 
 
-
-        // --- İş emri açma ---
+        // --- İş emri kapatma / güncelleme ---
         public async Task<WorkOrderDto> CreateAsync(CreateWorkOrderDto dto)
         {
             var entity = _mapper.Map<WorkOrder>(dto);
             entity.OpenDate = DateTime.Now; // açılış tarihi
+
             await _unitOfWork.WorkOrders.AddAsync(entity);
             await _unitOfWork.CommitAsync();
+
             return _mapper.Map<WorkOrderDto>(entity);
         }
 
-        // --- İş emri kapatma / güncelleme ---
+        // --- İş emri kapatma / fatura oluşturma ---
         public async Task CloseWorkOrderAsync(int id, string description, decimal laborCost, int? employeeId)
         {
             var workOrder = await _unitOfWork.WorkOrders.GetDetailsAsync(id);
             if (workOrder == null)
-                throw new Exception("WorkOrder not found");
+                throw new Exception("İş emri bulunamadı.");
 
+            // Bilgileri güncelle
             workOrder.Description = description;
             workOrder.LaborCost = laborCost;
             workOrder.EmployeeId = employeeId;
             workOrder.CloseDate = DateTime.Now;
 
-            // Eğer iş emrine bağlı fatura yoksa oluştur
+            // Zaten faturası var mı kontrol et
             var existingInvoice = await _unitOfWork.Invoices.Query()
                 .FirstOrDefaultAsync(i => i.WorkOrderId == workOrder.Id);
 
             if (existingInvoice == null)
             {
+                // Yeni fatura oluştur
                 var invoice = new Invoice
                 {
                     WorkOrderId = workOrder.Id,
@@ -116,9 +119,13 @@ namespace Application.Services
                     Items = new List<InvoiceItem>()
                 };
 
+                // Önce faturayı kaydet ki ID oluşsun
+                await _unitOfWork.Invoices.AddAsync(invoice);
+                await _unitOfWork.CommitAsync();
+
                 decimal total = 0;
 
-                // Parça kalemleri
+                // Parçaları fatura kalemi olarak ekle
                 foreach (var part in workOrder.Parts)
                 {
                     var unitPrice = await _unitOfWork.StockPrices.Query()
@@ -138,22 +145,22 @@ namespace Application.Services
 
                     total += part.Quantity * unitPrice;
 
-                    // Stok düş
-                    var inventory = await _unitOfWork.Inventories.Query()
-                        .FirstOrDefaultAsync(i => i.StockId == part.StockId && i.DepotId == part.DepotId);
-
-                    if (inventory != null)
+                    // 🔹 Envanter çıkışı (stok düşümü)
+                    var movement = new Inventory
                     {
-                        inventory.Quantity -= part.Quantity;
-                        _unitOfWork.Inventories.Update(inventory);
-                    }
+                        DepotId = part.DepotId,
+                        StockId = part.StockId,
+                        Quantity = part.Quantity,
+                        IsInput = false, // çıkış
+                        CreatedAt = DateTime.Now,
+                        Description = $"Fatura #{invoice.Id} çıkışı (İş Emri #{workOrder.Id})"
+                    };
+
+                    await _unitOfWork.Inventories.AddAsync(movement);
                 }
 
-                // İşçilik ekle
-                total += workOrder.LaborCost;
-                invoice.Total = total;
-
-                await _unitOfWork.Invoices.AddAsync(invoice);
+                // İşçilik dahil toplam
+                invoice.Total = total + workOrder.LaborCost;
             }
 
             await _unitOfWork.CommitAsync();
@@ -174,10 +181,30 @@ namespace Application.Services
         // --- İş emrine parça ekleme ---
         public async Task AddPartAsync(CreateWorkOrderPartDto dto)
         {
+            // 🔹 1. İlgili stokun net miktarını hesapla
+            var allMovements = await _unitOfWork.Inventories.Query()
+                .Where(i => i.DepotId == dto.DepotId && i.StockId == dto.StockId && !i.IsDeleted)
+                .ToListAsync();
+
+            if (!allMovements.Any())
+                throw new Exception("Bu stok seçilen depoda bulunmuyor.");
+
+            decimal totalInputs = allMovements.Where(i => i.IsInput).Sum(i => i.Quantity);
+            decimal totalOutputs = allMovements.Where(i => !i.IsInput).Sum(i => i.Quantity);
+            decimal netQuantity = totalInputs - totalOutputs;
+
+            // 🔹 2. Stok yetersizse hata ver
+            if (netQuantity < dto.Quantity)
+                throw new Exception($"Depoda yeterli stok yok. (Mevcut: {netQuantity:N2})");
+
+            // 🔹 3. Sadece parça kaydını oluştur
             var entity = _mapper.Map<WorkOrderPart>(dto);
             await _unitOfWork.WorkOrderParts.AddAsync(entity);
+
+            // 🔹 4. Henüz stoktan düşülmez! (fatura kesilince düşecek)
             await _unitOfWork.CommitAsync();
         }
+
 
         // --- İş emrinden parça silme ---
         public async Task RemovePartAsync(int partId)

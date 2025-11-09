@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions.Services;
 using Application.DTOs.WorkOrder;
 using Application.DTOs.WorkOrderPart;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebMvc.Areas.Admin.Controllers
@@ -36,6 +37,9 @@ namespace WebMvc.Areas.Admin.Controllers
             _depotService = depotService;
         }
 
+
+        [AllowAnonymous]
+        [Authorize(Roles = "AdminRole,PersonelRole")]
         // --- Index ---
         public async Task<IActionResult> Index(int? vehicleId)
         {
@@ -148,7 +152,8 @@ namespace WebMvc.Areas.Admin.Controllers
             return RedirectToAction("Index", new { vehicleId = order.VehicleId });
         }
 
-        // --- Details ---
+        [AllowAnonymous]
+        [Authorize(Roles = "AdminRole,PersonelRole")]
         public async Task<IActionResult> Details(int id)
         {
             var order = await _workOrderService.GetByIdAsync(id);
@@ -159,6 +164,8 @@ namespace WebMvc.Areas.Admin.Controllers
         }
 
         // --- Ajax: Depoya göre stoklar ---
+        [AllowAnonymous]
+        [Authorize(Roles = "AdminRole,PersonelRole")]
         [HttpGet]
         public async Task<IActionResult> GetStocksByDepot(int depotId)
         {
@@ -175,6 +182,8 @@ namespace WebMvc.Areas.Admin.Controllers
         }
 
         // --- Ajax: Stoğa göre fiyat tipleri ---
+        [AllowAnonymous]
+        [Authorize(Roles = "AdminRole,PersonelRole")]
         [HttpGet]
         public async Task<IActionResult> GetPriceTypesByStock(int stockId)
         {
@@ -190,6 +199,8 @@ namespace WebMvc.Areas.Admin.Controllers
         }
 
         // --- İş Emrine Parça Ekle ---
+        [AllowAnonymous]
+        [Authorize(Roles = "AdminRole,PersonelRole")]
         [HttpPost]
         public async Task<IActionResult> AddPart(CreateWorkOrderPartDto dto)
         {
@@ -217,7 +228,9 @@ namespace WebMvc.Areas.Admin.Controllers
 
 
         // --- İş Emrinden Parça Sil ---
-   
+        [AllowAnonymous]
+        [Authorize(Roles = "AdminRole,PersonelRole")]
+
         [HttpPost]
         public async Task<IActionResult> RemovePart(int id, int workOrderId)
         {
@@ -233,6 +246,19 @@ namespace WebMvc.Areas.Admin.Controllers
 
             return RedirectToAction("Details", new { id = workOrderId });
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Authorize(Roles = "AdminRole,PersonelRole")]
+        public async Task<IActionResult> GetStockInfo(int depotId, int stockId)
+        {
+            var stock = await _inventoryService.GetByDepotAndStockAsync(depotId, stockId);
+            if (stock == null)
+                return Json(new { exists = false, quantity = 0 });
+
+            return Json(new { exists = true, quantity = stock.Quantity });
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> UpdateLaborCost(int id, decimal laborCost)
@@ -252,6 +278,8 @@ namespace WebMvc.Areas.Admin.Controllers
 
         // --- Ajax: Müşteriye göre araçlar ---
         [HttpGet]
+        [AllowAnonymous]
+        [Authorize(Roles = "AdminRole,PersonelRole")]
         public async Task<IActionResult> GetVehiclesByAct(int actId)
         {
             var vehicles = await _vehicleService.GetAllByActIdAsync(actId);
