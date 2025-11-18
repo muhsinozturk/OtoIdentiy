@@ -10,10 +10,8 @@
             <ul class="dropdown-menu">
 
                 <li><a class="dropdown-item" asp-area="Admin" asp-controller="Member" asp-action="Index">Profil</a></li>
-                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Member" asp-action="PasswordChange">Şifre Değiştir</a></li>
-                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Member" asp-action="UserEdit">Kullanıcı Güncelle</a></li>
-                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Member" asp-action="Claims">Claims</a></li>
-                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Member" asp-action="Logout" asp-route-returnurl="/Home/Index">Çıkış Yap</a></li>
+       
+                <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout" asp-route-returnurl="/Home/Index">Çıkış Yap</a></li>
                 @if (User.HasClaim(x => x.Type == ClaimTypes.Role && x.Value == "AdminRole"))//claim tipi rol olan ve değeri admin olan kullanıcılar için admin panelini göster
                 {
                     <li><hr class="dropdown-divider"></li>
@@ -32,7 +30,6 @@
 
 else
 {
-    <a class="btn btn-outline-success mx-1" asp-controller="home" asp-action="SignUp">Üye Kayıt</a>
-    <a class="btn btn-outline-success " asp-controller="home" asp-action="SignIn">Üye Giriş</a>
+    <a class="btn btn-outline-success " asp-controller="Account" asp-action="SignIn">Üye Giriş</a>
 
 }

@@ -1,0 +1,52 @@
+﻿@using WebMvc.Models.Identity
+
+@model SignUpViewModel
+<div class="row justify-content-center">
+
+	<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+	<div class="col-md-6 col-lg-5">
+		<h2 class="font-weight-bold text-5 mb-0">Kayıt Ol</h2>
+		<form asp-controller="Account" asp-action="SignUp" id="frmSignUp" method="post">
+			<div class="row">
+				<div class="form-group col">
+					<label asp-for="UserName" class="form-label text-color-dark text-3"><span class="text-color-danger">*</span></label>
+					<input asp-for="UserName" class="form-control form-control-lg text-4" placeholder="Kullanıcı Adınız" />
+					<span asp-validation-for="UserName" class="text-danger small"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col">
+					<label asp-for="Email" class="form-label fw-bold"></label>
+					<input asp-for="Email" class="form-control" placeholder="E-posta adresiniz" />
+					<span asp-validation-for="Email" class="text-danger small"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col">
+					<label asp-for="Phone" class="form-label fw-bold"></label>
+					<input asp-for="Phone" class="form-control" placeholder="Telefon" />
+					<span asp-validation-for="Phone" class="text-danger small"></span>
+				</div>
+			</div>
+				<div class="row">
+				<div class="form-group col">
+					<label asp-for="Password" class="form-label fw-bold"></label>
+					<input asp-for="Password" class="form-control" type="password" placeholder="Şifreniz" />
+					<span asp-validation-for="Password" class="text-danger small"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col">
+					<label asp-for="PasswordConfirm" class="form-label fw-bold"></label>
+					<input asp-for="PasswordConfirm" class="form-control" type="password" placeholder="Şifreniz" />
+					<span asp-validation-for="PasswordConfirm" class="text-danger small"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="form-group col">
+					<button type="submit" class="btn btn-dark btn-modern w-100 text-uppercase rounded-0 font-weight-bold text-3 py-3" data-loading-text="Loading...">Kayıt</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

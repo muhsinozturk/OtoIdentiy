@@ -1,90 +1,104 @@
-﻿@using Application.ViewModels
-
+﻿@using WebMvc.Models.Identity
 
 @model UserEditViewModel
 
-@section Scripts
-{
+@section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }
 
+<div class="container pt-3 pb-2 mt-5">
+    <div class="row pt-2">
+
+        <!-- Sol Menü -->
+        <div class="col-lg-3 mt-4 mt-lg-0">
+            <aside class="sidebar" id="sidebar">
+                <ul class="nav nav-list flex-column mb-5">
 
 
+                    <li class="nav-item">
+                        <img src="@Url.Content("~/admin/img/" + (Model.PictureFileName ?? "user.png"))"
+                             alt="Profil Resmi" class="img-fluid rounded-circle"
+                             style="width:150px;height:150px;object-fit:cover;" />
 
-<div class="container mt-5">
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-3 text-dark active"
+                           asp-area="Admin" asp-controller="Member" asp-action="Index">
+                            Profil Bilgilerim
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-3"
+                           asp-area="Admin" asp-controller="Member" asp-action="PasswordChange">
+                            Şifre Değiştir
+                        </a>
+                    </li>
 
-
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-info" role="alert">
-            @TempData["SuccessMessage"]
+                </ul>
+            </aside>
         </div>
-    }
 
+        <!-- Sağ Panel -->
+        <div class="col-lg-9">
+            <form asp-controller="Member" asp-area="Admin" asp-action="UserEdit"
+                  method="post" enctype="multipart/form-data" class="needs-validation">
 
-
-
-    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card shadow-lg border-0 rounded-3">
-                <h1 class="text-center mt-3">Kullanıcı Güncelleme</h1>
-                <div class="card-body p-4">
-                    <form asp-controller="Member" asp-action="UserEdit" method="post" enctype="multipart/form-data">
-
-                        <div class="mb-3">
-                            <label asp-for="UserName" class="form-label fw-bold"></label>
-                            <input asp-for="UserName" class="form-control" placeholder="" />
-                            <span asp-validation-for="UserName" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label fw-bold"></label>
-                            <input asp-for="Email" class="form-control" placeholder="" />
-                            <span asp-validation-for="Email" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Phone" class="form-label fw-bold"></label>
-                            <input asp-for="Phone" class="form-control" placeholder="" />
-                            <span asp-validation-for="Phone" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="BirthDate" class="form-label fw-bold"></label>
-                            <input asp-for="BirthDate" type="date" class="form-control" />
-                            <span asp-validation-for="BirthDate" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="City" class="form-label fw-bold"></label>
-                            <input asp-for="City" class="form-control" placeholder="" />
-                            <span asp-validation-for="City" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Gender" class="form-label fw-bold"></label>
-                            <select asp-for="Gender" class="form-control" asp-items="ViewBag.gender">
-                                <option value="">Seçiniz...</option>
-                            </select>
-                            <span asp-validation-for="Gender" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Picture" class="form-label fw-bold"></label>
-                            <input asp-for="Picture" class="form-control" type="file" />
-                            <span asp-validation-for="Picture" class="text-danger small"></span>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-box-arrow-in-right"></i> Güncelle
-                        </button>
-
-                    </form>
+                <!-- Profil Resmi -->
+                <div class="form-group row mb-3">
+                    <label asp-for="Picture" class="col-lg-3 col-form-label fw-bold pt-2">Yeni Profil Resmi</label>
+                    <div class="col-lg-9">
+                        <input asp-for="Picture" class="form-control" />
+                        <span asp-validation-for="Picture" class="text-danger small"></span>
+                    </div>
                 </div>
-            </div>
+                <!-- Kullanıcı Bilgileri -->
+                <div class="form-group row mb-3">
+                    <label asp-for="UserName" class="col-lg-3 col-form-label fw-bold pt-2"></label>
+                    <div class="col-lg-9">
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label asp-for="Email" class="col-lg-3 col-form-label fw-bold pt-2"></label>
+                    <div class="col-lg-9">
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label asp-for="Phone" class="col-lg-3 col-form-label fw-bold pt-2"></label>
+                    <div class="col-lg-9">
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label asp-for="BirthDate" class="col-lg-3 col-form-label fw-bold pt-2"></label>
+                    <div class="col-lg-9">
+                        <input asp-for="BirthDate" type="date" class="form-control" />
+                        <span asp-validation-for="BirthDate" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-4">
+                    <label asp-for="City" class="col-lg-3 col-form-label fw-bold pt-2"></label>
+                    <div class="col-lg-9">
+                        <input asp-for="City" class="form-control" />
+                        <span asp-validation-for="City" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <!-- Kaydet Butonu -->
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">
+                        Güncelle
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-
 </div>

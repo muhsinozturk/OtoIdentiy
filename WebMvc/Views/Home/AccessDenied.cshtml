@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Erişim Engellendi";
+}
+
+<div class="container text-center mt-5">
+    <h3 class="text-danger mb-3">@ViewBag.message</h3>
+    <p class="text-muted">Ana sayfaya yönlendiriliyorsunuz...</p>
+
+</div>
+
+<script>
+    setTimeout(function () {
+        window.location.href = '@Url.Action("Index", "Home")';
+    }, 5000); // 3 saniye
+</script>

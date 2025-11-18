@@ -109,13 +109,12 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Home/SignIn";
-    options.LogoutPath = "/Admin/Member/Logout";
+    options.LoginPath = "/Account/SignIn";
+    options.LogoutPath = "/Account/Logout";
     options.AccessDeniedPath = "/Home/AccessDenied";
     options.Cookie.Name = "AspNetCoreIdentityAppCookie";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
     options.SlidingExpiration = true;
-    options.AccessDeniedPath = "/Admin/Member/AccessDenied";
 });
 
 var app = builder.Build();

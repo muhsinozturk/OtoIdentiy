@@ -1,5 +1,4 @@
 ﻿
-using Application.ViewModels;
 
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
@@ -11,8 +10,10 @@ using Microsoft.Identity.Client;
 using System.Collections.Generic;
 using System.Security.AccessControl;
 using System.Security.Claims;
+
 using WebMvc.Extenisons;
 using WebMvc.Models;
+using WebMvc.Models.Identity;
 
 namespace WebMvc.Areas.Admin.Controllers;
 
@@ -31,18 +32,20 @@ public class MemberController : AdminBaseController
     }
 
 
-
     public async Task<IActionResult> Index()
     {
-
         var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
-        var userViewModel = new UserViewModel()
+
+        var userViewModel = new UserEditViewModel
         {
-            UserName = currentUser!.UserName,
-            Email = currentUser!.Email,
-            Phone = currentUser!.PhoneNumber,
-            PictureUrl = currentUser!.Picture
+            UserName = currentUser.UserName,
+            Email = currentUser.Email,
+            Phone = currentUser.PhoneNumber,
+            BirthDate = currentUser.BirthDate,
+            City = currentUser.City,
+            PictureFileName = currentUser.Picture // 🔹 Eksik kısım eklendi
         };
+
         return View(userViewModel);
     }
 
@@ -91,22 +94,20 @@ public class MemberController : AdminBaseController
     }
 
 
+    [HttpGet]
     public async Task<IActionResult> UserEdit()
     {
+        var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
 
-        ViewBag.gender = new SelectList(Enum.GetNames(typeof(Gender)));
-        var currentUser = (await _userManager.FindByNameAsync(User.Identity!.Name!))!;
-
-        var userEditViewModel = new UserEditViewModel()
+        var userEditViewModel = new UserEditViewModel
         {
-            UserName = currentUser.UserName,
+            UserName = currentUser!.UserName,
             Email = currentUser.Email,
             Phone = currentUser.PhoneNumber,
             BirthDate = currentUser.BirthDate,
             City = currentUser.City,
-            Gender = currentUser.Gender,
+            PictureFileName = currentUser.Picture // mevcut resim (örneğin default_user_picture.png)
         };
-
 
         return View(userEditViewModel);
     }
@@ -115,72 +116,63 @@ public class MemberController : AdminBaseController
     public async Task<IActionResult> UserEdit(UserEditViewModel request)
     {
         if (!ModelState.IsValid)
-        {
-            return View();
+            return View(request);
 
-        }
+        var currentUser = await _userManager.FindByNameAsync(User.Identity!.Name!);
 
-        var currentUser = (await _userManager.FindByNameAsync(User.Identity!.Name!))!;
         currentUser.UserName = request.UserName;
         currentUser.Email = request.Email;
         currentUser.PhoneNumber = request.Phone;
         currentUser.BirthDate = request.BirthDate;
         currentUser.City = request.City;
-        currentUser.Gender = request.Gender;
 
-
+        // 🔹 Dosya geldi mi kontrol et
         if (request.Picture != null && request.Picture.Length > 0)
         {
-            var wwwrootFolder = _fileProvider.GetDirectoryContents("wwwroot");
-            string randomFileName = $"{Guid.NewGuid().ToString()}{Path.GetExtension(request.Picture.FileName)}";
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "admin", "img");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
 
-            var newPicturePath = Path.Combine(wwwrootFolder!.First(x => x.Name == "userpictures").PhysicalPath!, randomFileName);
-            using var stream = new FileStream(newPicturePath, FileMode.Create);
-            await request.Picture.CopyToAsync(stream);
-            currentUser.Picture = randomFileName;
+            var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(request.Picture.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await request.Picture.CopyToAsync(fileStream);
+            }
+
+            // Eski resmi sil (default hariç)
+            if (!string.IsNullOrEmpty(currentUser.Picture) && currentUser.Picture != "user.png")
+            {
+                var oldFilePath = Path.Combine(uploadsFolder, currentUser.Picture);
+                if (System.IO.File.Exists(oldFilePath))
+                    System.IO.File.Delete(oldFilePath);
+            }
+
+            currentUser.Picture = uniqueFileName;
         }
-        var updateToUserResult = await _userManager.UpdateAsync(currentUser);
-        if (!updateToUserResult.Succeeded)
+
+        var result = await _userManager.UpdateAsync(currentUser);
+        if (!result.Succeeded)
         {
-            ModelState.AddModelErrorList(updateToUserResult.Errors);
-            return View();
+            ModelState.AddModelErrorList(result.Errors);
+            return View(request);
         }
 
+        await _signInManager.RefreshSignInAsync(currentUser);
+        TempData["SuccessMessage"] = "Profil güncelleme başarılı.";
 
-        await _userManager.UpdateSecurityStampAsync(currentUser);
-        await _signInManager.SignOutAsync();
-
-        if(request.BirthDate.HasValue)
-        {
-            await _signInManager.SignInWithClaimsAsync(currentUser, true, new[] {
-                    new Claim("birthdate", currentUser.BirthDate!.Value.ToString()) });
-        }
-        else
-        {
-            await _signInManager.SignInAsync(currentUser, true);
-        }
-   
-        
-    
-
-        TempData["SuccessMessage"] = "Profil güncelleme başarılı";
-
-        var userEditViewModel = new UserEditViewModel()
+        var updatedVm = new UserEditViewModel
         {
             UserName = currentUser.UserName,
             Email = currentUser.Email,
             Phone = currentUser.PhoneNumber,
             BirthDate = currentUser.BirthDate,
             City = currentUser.City,
-            Gender = currentUser.Gender,
-
+            PictureFileName = currentUser.Picture
         };
 
-        return View(userEditViewModel);
-
-
-
+        return View(updatedVm);
     }
 
     public IActionResult AccessDenied(string ReturnUrl)

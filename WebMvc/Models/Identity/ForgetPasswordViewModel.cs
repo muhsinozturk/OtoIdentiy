@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.ViewModels;
+namespace WebMvc.Models.Identity;
+
 
 
 public class ForgetPasswordViewModel
