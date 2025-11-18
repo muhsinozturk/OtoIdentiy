@@ -18,7 +18,7 @@ using WebMvc.Models.Identity;
 namespace WebMvc.Areas.Admin.Controllers;
 
 
-[Authorize(Roles = "AdminRole,PersonelRole")]
+
 public class MemberController : AdminBaseController
 {
     private readonly SignInManager<AppUser> _signInManager;

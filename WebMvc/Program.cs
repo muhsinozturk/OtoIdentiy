@@ -3,6 +3,7 @@ using Domain.OptionsModels;
 using Domain.PermissionsRoot;
 using Infrastructure;
 using Infrastructure.Data;
+using Infrastructure.Data.Seed;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -118,6 +119,26 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 var app = builder.Build();
+bool isSeedOnly = args.Contains("--seed");
+if (isSeedOnly)
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+
+    using var tx = await db.Database.BeginTransactionAsync();
+
+    await tx.CommitAsync();
+
+    // Sıra ile seed işlemleri
+
+    await RoleSeeder.SeedAsync(db);
+    await UserSeeder.SeedAsync(userManager, roleManager);
+
+    return;
+}
+
 
 using (var scope = app.Services.CreateScope()) //
 {
