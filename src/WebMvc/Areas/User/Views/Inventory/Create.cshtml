@@ -1,0 +1,77 @@
+﻿@model Application.DTOs.Inventory.CreateInventoryDto
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-box-seam me-2"></i> Yeni Envanter Ekle
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Create" method="post" class="row g-3">
+                <input type="hidden" name="DepotId" value="@Model.DepotId" />
+                <input type="hidden" name="IsInput" value="true" />
+
+                <!-- Stok Grubu -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Stok Grubu</label>
+                    <select id="StockGroupId" name="StockGroupId" class="form-select">
+                        <option value="">Seçiniz...</option>
+                        @foreach (var g in ViewBag.StockGroups)
+                        {
+                            <option value="@g.Id">@g.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Stok -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Stok</label>
+                    <select id="StockId" name="StockId" class="form-select">
+                        <option>Önce grup seçiniz...</option>
+                    </select>
+                </div>
+
+                <!-- Miktar -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Miktar</label>
+                    <input type="number" step="0.01" name="Quantity" class="form-control" />
+                </div>
+
+                <!-- Açıklama -->
+                <div class="col-md-12">
+                    <label class="form-label fw-semibold">Açıklama</label>
+                    <textarea name="Description" class="form-control"></textarea>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end">
+                    <button class="btn btn-success">
+                        <i class="bi bi-save me-1"></i> Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $("#StockGroupId").change(function () {
+            var groupId = $(this).val();
+            var $stockDropdown = $("#StockId");
+            $stockDropdown.empty();
+
+            if (groupId) {
+                $.getJSON('@Url.Action("GetStocksByGroup", "Inventory", new { area = "User" })',
+                    { groupId: groupId })
+                    .done(function (data) {
+                        $stockDropdown.append('<option value="">Seçiniz...</option>');
+                        $.each(data, function (i, item) {
+                            $stockDropdown.append(`<option value="${item.id}">${item.name}</option>`);
+                        });
+                    });
+            } else {
+                $stockDropdown.append('<option>Önce grup seçiniz...</option>');
+            }
+        });
+    </script>
+}

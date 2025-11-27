@@ -1,0 +1,52 @@
+﻿@using WebMvc.Areas.Admin.Models
+@model IEnumerable<UserViewModel>
+
+@{
+    ViewData["Title"] = "Kullanıcı Listesi";
+}
+
+<h3 class="mb-3">Kullanıcı Listesi</h3>
+
+<a asp-action="Create" class="btn btn-primary mb-3">
+    <i class="bi bi-plus-circle"></i> Yeni Kullanıcı Ekle
+</a>
+
+<table class="table table-striped table-bordered align-middle shadow-sm">
+    <thead class="table-light">
+        <tr>
+            <th style="width:30%">Kullanıcı Adı</th>
+            <th style="width:30%">E-Posta</th>
+            <th style="width:40%">İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-warning me-1">
+                            <i class="bi bi-pencil"></i> Düzenle
+                        </a>
+
+                        <a asp-controller="Roles" asp-action="AssingRoleToUser" asp-route-id="@user.Id"
+                           class="btn btn-sm btn-info me-1">
+                            <i class="bi bi-person-gear"></i> Rol Ekle
+                        </a>
+
+                    
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center text-muted">Henüz kullanıcı bulunmamaktadır.</td>
+            </tr>
+        }
+    </tbody>
+</table>

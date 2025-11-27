@@ -1,0 +1,73 @@
+﻿@model Application.DTOs.Inventory.CreateInventoryDto
+
+<div class="modal-header bg-primary text-white">
+    <h5 class="modal-title">Envanter Ekle</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<form id="inventoryForm">
+    <div class="modal-body">
+
+        <input type="hidden" name="DepotId" value="@Model.DepotId" />
+        <input type="hidden" name="IsInput" value="true" />
+        <input type="hidden" name="StockGroupId" id="GroupHidden" />
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Stok Grubu</label>
+            <select id="groupSelect" class="form-select">
+                <option value="">Seçiniz...</option>
+                @foreach (var g in ViewBag.StockGroups)
+                {
+                    <option value="@g.Id">@g.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Stok</label>
+            <select name="StockId" id="stockSelect" class="form-select">
+                <option value="">Önce grup seçiniz...</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Miktar</label>
+            <input name="Quantity" type="number" class="form-control" />
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Kaydet</button>
+    </div>
+</form>
+
+<script>
+    $("#groupSelect").on("change", function () {
+        $("#GroupHidden").val($(this).val());
+
+        const groupId = $(this).val();
+        const $stockSelect = $("#stockSelect");
+
+        $stockSelect.html('<option>Yükleniyor...</option>');
+
+        $.getJSON('/User/Inventory/GetStocksByGroup', { groupId })
+            .done(function (data) {
+                let html = '<option value="">Seçiniz...</option>';
+                data.forEach(s => html += `<option value="${s.id}">${s.name}</option>`);
+                $stockSelect.html(html);
+            });
+    });
+
+    // AJAX POST
+    $("#inventoryForm").on("submit", function (e) {
+        e.preventDefault();
+
+        $.post('/User/Inventory/CreateAjax', $(this).serialize(), function (res) {
+            if (res.success)
+                location.reload();
+            else
+                alert(res.message);
+        });
+    });
+</script>

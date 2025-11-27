@@ -1,0 +1,54 @@
+﻿@model Application.DTOs.Company.CompanyDto
+
+<div class="container-fluid px-0">
+
+    <!-- ⭐ Başlık -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-primary mb-0">
+            <i class="bi bi-building-check me-2"></i> Şirket Düzenle
+        </h3>
+
+        <a asp-action="Index" class="btn btn-outline-secondary px-4">
+            <i class="bi bi-arrow-left"></i> Geri
+        </a>
+    </div>
+
+    <!-- 📝 Form Kartı -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white fw-semibold">
+            Şirket Bilgileri
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Edit" method="post" class="row g-3">
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="col-12">
+                    <label asp-for="Name" class="form-label fw-semibold">
+                        Şirket Adı <span class="text-danger">*</span>
+                    </label>
+
+                    <input asp-for="Name"
+                           class="form-control form-control-lg"
+                           placeholder="Şirket adını girin" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="col-12 mt-3 d-flex justify-content-end gap-3">
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                        <i class="bi bi-x-circle"></i> İptal
+                    </a>
+
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="bi bi-check-circle me-1"></i> Kaydet
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

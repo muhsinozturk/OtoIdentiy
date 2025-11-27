@@ -1,0 +1,46 @@
+﻿@using WebMvc.Areas.User.Models
+@model List<RoleViewModel>
+<br />
+
+
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-info" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+
+<div style="margin:0 100px">
+    <h2>Role Listesi</h2>
+    <table class="table table-striped ">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Role İsmi</th>
+
+            </tr>
+        </thead>
+
+
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" asp-controller="Roles" asp-action="RoleUpdate" asp-route-id="@user.Id">Güncelle</a>
+                        <a class="btn btn-danger btn-sm" asp-controller="Roles" asp-action="RoleDelete" asp-route-id="@user.Id" onclick="return confirm('Bu rolü silmek istediğinize emin misiniz?');">Sil</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+
+    <a class="btn btn-primary" asp-controller="Roles" asp-action="RoleCreate" asp-area="Admin">Role Ekle</a>
+</div>

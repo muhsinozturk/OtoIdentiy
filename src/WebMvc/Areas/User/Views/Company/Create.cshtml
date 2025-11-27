@@ -1,0 +1,14 @@
+﻿@model Application.DTOs.Company.CreateCompanyDto
+
+<h2>Yeni Şirket Ekle</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label>Şirket Adı</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+</form>

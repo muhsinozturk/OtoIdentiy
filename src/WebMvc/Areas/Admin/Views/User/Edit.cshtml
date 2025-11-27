@@ -1,0 +1,43 @@
+﻿@using WebMvc.Areas.Admin.Models
+@model AdminUserEditViewModel
+
+@{
+    ViewData["Title"] = "Kullanıcı Düzenle";
+}
+
+<h4>Kullanıcı Bilgilerini Düzenle</h4>
+<hr />
+
+<form asp-action="Edit" method="post" class="p-3 border rounded shadow-sm">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="UserName" class="form-label"></label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PhoneNumber" class="form-label"></label>
+        <input asp-for="PhoneNumber" class="form-control" />
+        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RoleName" class="form-label"></label>
+        <select asp-for="RoleName" asp-items="ViewBag.Roles" class="form-select">
+            <option value="">Rol Seçiniz</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+        <i class="bi bi-save"></i> Güncelle
+    </button>
+    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+</form>

@@ -1,0 +1,14 @@
+﻿@using Application.DTOs.Act
+@model ActDto
+
+<h2>Müşteri Sil</h2>
+
+<div class="alert alert-danger">
+    <p><strong>@Model.FullName</strong> adlı müşteriyi silmek istediğinize emin misiniz?</p>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>

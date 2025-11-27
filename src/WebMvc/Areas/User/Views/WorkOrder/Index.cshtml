@@ -1,0 +1,135 @@
+﻿@model List<Application.DTOs.WorkOrder.WorkOrderDto>
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light position-relative">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0 fw-semibold text-dark">
+                    @if (ViewBag.Vehicle != null)
+                    {
+                        <i class="bi bi-wrench-adjustable-circle me-2 text-secondary"></i>
+                        @ViewBag.Vehicle.Plate <span class="text-muted fs-6">| İş Emirleri</span>
+                    }
+                    else
+                    {
+                        <i class="bi bi-clipboard-check me-2 text-secondary">
+                        Tüm İş Emirleri </i>
+                    }
+                </h4>
+
+                <!-- ✅ SAĞA HİZALANMIŞ BUTON -->
+                <div>
+                    @if (ViewBag.Vehicle != null)
+                    {
+                        <a asp-action="Create" asp-route-vehicleId="@ViewBag.Vehicle.Id"
+                           class="btn btn-success btn-sm px-3 shadow-sm">
+                            <i class="bi bi-plus-circle me-1"></i> Yeni İş Emri
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Create" class="btn btn-success btn-sm px-3 shadow-sm">
+                            <i class="bi bi-plus-circle me-1"></i> Yeni İş Emri
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+             <table class="table table-bordered table-hover align-middle table-sm mb-0 text-center">
+
+                        <thead class="table-light text-center">
+                            <tr>
+                                @if (ViewBag.Vehicle == null)
+                                {
+                                    <th>Plaka</th>
+                                }
+                                <th>Açılış</th>
+                                <th>Kapanış</th>
+                                <th>Açıklama</th>
+                                <th>Personel</th>
+                                <th style="width: 360px;">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var o in Model)
+                            {
+                                <tr>
+                                    @if (ViewBag.Vehicle == null)
+                                    {
+                                        <td class="fw-semibold">@o.VehiclePlate</td>
+                                    }
+                                    <td>@o.OpenDate.ToShortDateString()</td>
+                                    <td>
+                                        @if (o.CloseDate == null)
+                                        {
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1">
+                                                Açık
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1">
+                                                @o.CloseDate?.ToShortDateString()
+                                            </span>
+                                        }
+                                    </td>
+                                    <td >@o.Description</td>
+                                    <td>@o.EmployeeFullName</td>
+                                    <td class="text-center">
+                                        <div class="btn-group " role="group">
+                                            <a asp-action="Details" asp-route-id="@o.Id"
+                                               class="btn btn-outline-secondary" title="Detay">
+                                                <i class="bi bi-eye">İş Süreci</i>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@o.Id"
+                                               class="btn btn-outline-warning" title="Düzenle / Kapat">
+                                                <i class="bi bi-pencil-square">Düzenle / Kapat</i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@o.Id"
+                                               class="btn btn-outline-danger" title="Sil">
+                                                <i class="bi bi-trash">Sil</i>
+                                            </a>
+
+                                            @if (o.CloseDate != null)
+                                            {
+                                                if (o.HasInvoice)
+                                                {
+                                                    <a asp-action="Details" asp-controller="Invoice" asp-route-id="@o.InvoiceId"
+                                                       class="btn btn-outline-success" title="Fatura Detayı">
+                                                        <i class="bi bi-file-earmark-text">Fatura Detayı</i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <form asp-action="CreateFromWorkOrder" asp-controller="Invoice" method="post" class="d-inline">
+                                                        <input type="hidden" name="workOrderId" value="@o.Id" />
+                                                        <input type="hidden" name="vehicleId" value="@o.VehicleId" />
+                                                        <button type="submit" class="btn btn-success" title="Fatura Kes">
+                                                            <i class="bi bi-receipt">Fatura Kes</i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-light border text-center mb-0 py-3">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Henüz iş emri kaydı bulunmamaktadır.
+                </div>
+            }
+        </div>
+    </div>
+</div>

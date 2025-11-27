@@ -1,0 +1,142 @@
+﻿@{
+    ViewData["Title"] = "Yönetim Paneli - Dashboard";
+}
+
+
+
+
+@{
+    ViewData["Title"] = "Yönetim Paneli - Dashboard";
+}
+
+<div class="container-fluid px-4 mt-4">
+
+    <h2 class="mb-4 fw-bold">
+        <i class="bi bi-speedometer2 text-primary"></i> Genel Durum
+    </h2>
+
+    <!-- 📌 1. Satır -->
+    <div class="row g-4">
+
+        <!-- Döviz -->
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center">
+                    <h6 class="fw-bold">Döviz Kurları</h6>
+                    <p class="mb-1">USD: <strong>@(ViewBag.Currency?.USD.ToString("N2") ?? "0") ₺</strong></p>
+                    <p class="mb-0">EUR: <strong>@(ViewBag.Currency?.EUR.ToString("N2") ?? "0") ₺</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toplam İş Emri -->
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 bg-primary text-white">
+                <div class="card-body text-center">
+                    <h6 class="fw-bold">Toplam İş Emri</h6>
+                    <h3 class="fw-bold">@ViewBag.TotalWorkOrders</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toplam Gelir -->
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 bg-success text-white">
+                <div class="card-body text-center">
+                    <h6 class="fw-bold">Toplam Gelir</h6>
+                    <h3 class="fw-bold">@ViewBag.TotalRevenue.ToString("N2") ₺</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bugünkü Ciro -->
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 bg-info text-white">
+                <div class="card-body text-center">
+                    <h6 class="fw-bold">Bugünkü Ciro</h6>
+                    <h3 class="fw-bold">@ViewBag.TodayRevenue.ToString("N2") ₺</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 📌 2. Satır -->
+    <div class="row g-4 mt-1">
+
+        <!-- Personel Sayısı -->
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 bg-secondary text-white">
+                <div class="card-body text-center">
+                    <h6 class="fw-bold">Toplam Personel</h6>
+                    <h3 class="fw-bold">@ViewBag.EmployeeCount</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Müşteri Sayısı -->
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 bg-warning text-dark">
+                <div class="card-body text-center">
+                    <h6 class="fw-bold">Müşteri Sayısı</h6>
+                    <h3 class="fw-bold">@ViewBag.CustomerCount</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Araç Sayısı -->
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm border-0 bg-danger text-white">
+                <div class="card-body text-center">
+                    <h6 class="fw-bold">Araç Sayısı</h6>
+                    <h3 class="fw-bold">@ViewBag.VehicleCount</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+  
+
+</div>
+
+@using Newtonsoft.Json
+@{
+    var monthlyRevenue = ((IEnumerable<dynamic>)ViewBag.MonthlyRevenue).ToList();
+
+    var labels = Html.Raw(JsonConvert.SerializeObject(
+        monthlyRevenue.Select(x => (string)x.Month).ToList()
+    ));
+
+    var data = Html.Raw(JsonConvert.SerializeObject(
+        monthlyRevenue.Select(x => (decimal)x.Total).ToList()
+    ));
+}
+<script>
+    const ctx = document.getElementById('revenueChart');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @labels,
+            datasets: [{
+                label: 'Aylık Ciro (₺)',
+                data: @data,
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true },
+                tooltip: { mode: 'index', intersect: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>

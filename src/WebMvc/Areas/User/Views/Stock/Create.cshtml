@@ -1,0 +1,87 @@
+﻿@model Application.DTOs.Stock.CreateStockDto
+
+<div class="container-fluid px-4 mt-4">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white fw-semibold">
+            <i class="bi bi-box2-fill me-2"></i> Yeni Stok Kartı
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Create" method="post" novalidate>
+                <div class="row g-3">
+                    <!-- Kod -->
+                    <div class="col-md-6">
+                        <label asp-for="Code" class="form-label fw-semibold">Kod</label>
+                        <input asp-for="Code" class="form-control form-control-sm" placeholder="Stok kodu giriniz" />
+                        <span asp-validation-for="Code" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Ad -->
+                    <div class="col-md-6">
+                        <label asp-for="Name" class="form-label fw-semibold">Ad</label>
+                        <input asp-for="Name" class="form-control form-control-sm" placeholder="Stok adı giriniz" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Marka -->
+                    <div class="col-md-6">
+                        <label asp-for="Brand" class="form-label fw-semibold">Marka</label>
+                        <input asp-for="Brand" class="form-control form-control-sm" placeholder="Marka adı (örneğin: Bosch)" />
+                        <span asp-validation-for="Brand" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Model -->
+                    <div class="col-md-6">
+                        <label asp-for="Model" class="form-label fw-semibold">Model</label>
+                        <input asp-for="Model" class="form-control form-control-sm" placeholder="Model adı (örneğin: X123)" />
+                        <span asp-validation-for="Model" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Şirket -->
+                    <div class="col-md-6">
+                        <label asp-for="CompanyId" class="form-label fw-semibold">Şirket</label>
+                        <div class="custom-select-wrapper">
+                            <select asp-for="CompanyId"
+                                    class="form-select form-select-sm company-select">
+                                <option value="">Şirket seçiniz...</option>
+                                @foreach (var company in (List<Application.DTOs.Company.CompanyDto>)ViewBag.Companies)
+                                {
+                                    <option value="@company.Id">@company.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <span asp-validation-for="CompanyId" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Grup -->
+                    <div class="col-md-6">
+                        <label asp-for="StockGroupId" class="form-label fw-semibold">Stok Grubu</label>
+                        <div class="custom-select-wrapper">
+                            <select asp-for="StockGroupId"
+                                    class="form-select form-select-sm company-select">
+                                <option value="">Grup seçiniz...</option>
+                                @foreach (var group in (List<Application.DTOs.StockGroup.StockGroupDto>)ViewBag.Groups)
+                                {
+                                    <option value="@group.Id">@group.Name (@group.UnitType)</option>
+                                }
+                            </select>
+                        </div>
+                        <span asp-validation-for="StockGroupId" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Geri
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i> Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+﻿@model Application.DTOs.Inventory.InventoryDto
+
+<h2>Stok Girişini Sil</h2>
+
+<div class="alert alert-danger">
+    Bu kaydı silmek istediğinizden emin misiniz?
+</div>
+
+<dl class="row">
+    <dt class="col-sm-3">Stok</dt>
+    <dd class="col-sm-9">@Model.StockName</dd>
+
+    <dt class="col-sm-3">Depo</dt>
+    <dd class="col-sm-9">@Model.DepotName</dd>
+
+    <dt class="col-sm-3">Miktar</dt>
+    <dd class="col-sm-9">@Model.Quantity</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a asp-action="Index" asp-route-depotId="@Model.DepotId" class="btn btn-secondary">Geri</a>
+</form>

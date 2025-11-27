@@ -1,0 +1,109 @@
+﻿@using WebMvc.Models.Identity
+
+@model UserEditViewModel
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success mb-3" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+<div class="container pt-3 pb-2 mt-5">
+    <div class="row pt-2">
+
+        <!-- Sol Menü -->
+        <div class="col-lg-3 mt-4 mt-lg-0">
+            <aside class="sidebar" id="sidebar">
+                <ul class="nav nav-list flex-column mb-5">
+
+
+                    <li class="nav-item">
+                        <img src="@Url.Content("~/user/img/" + (Model.PictureFileName ?? "user.png"))"
+                             alt="Profil Resmi" class="img-fluid rounded-circle"
+                             style="width:150px;height:150px;object-fit:cover;" />
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-3 text-dark active"
+                           asp-area="User" asp-controller="Member" asp-action="Index">
+                            Profil Bilgilerim
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-3"
+                           asp-area="User" asp-controller="Member" asp-action="PasswordChange">
+                            Şifre Değiştir
+                        </a>
+                    </li>
+
+                </ul>
+            </aside>
+        </div>
+
+        <!-- Sağ Panel -->
+        <div class="col-lg-9">
+            <form asp-controller="Member" asp-area="User" asp-action="UserEdit"
+                  method="post" enctype="multipart/form-data" class="needs-validation">
+
+                <!-- Profil Resmi -->
+                <div class="form-group row mb-3">
+                    <label asp-for="Picture" class="col-lg-3 col-form-label fw-bold pt-2">Yeni Profil Resmi</label>
+                    <div class="col-lg-9">
+                        <input asp-for="Picture" class="form-control" />
+                        <span asp-validation-for="Picture" class="text-danger small"></span>
+                    </div>
+                </div>
+                <!-- Kullanıcı Bilgileri -->
+                <div class="form-group row mb-3">
+                    <label asp-for="UserName" class="col-lg-3 col-form-label fw-bold pt-2"></label>
+                    <div class="col-lg-9">
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label asp-for="Email" class="col-lg-3 col-form-label fw-bold pt-2"></label>
+                    <div class="col-lg-9">
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label asp-for="Phone" class="col-lg-3 col-form-label fw-bold pt-2"></label>
+                    <div class="col-lg-9">
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    <label asp-for="BirthDate" class="col-lg-3 col-form-label fw-bold pt-2"></label>
+                    <div class="col-lg-9">
+                        <input asp-for="BirthDate" type="date" class="form-control" />
+                        <span asp-validation-for="BirthDate" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row mb-4">
+                    <label asp-for="City" class="col-lg-3 col-form-label fw-bold pt-2"></label>
+                    <div class="col-lg-9">
+                        <input asp-for="City" class="form-control" />
+                        <span asp-validation-for="City" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <!-- Kaydet Butonu -->
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">
+                        Güncelle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
