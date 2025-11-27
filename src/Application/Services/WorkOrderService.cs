@@ -175,7 +175,8 @@ namespace Application.Services
                     WorkOrderId = id,
                     Date = DateTime.Now,
                     CreatedUserId = UserId,
-                    Items = new List<InvoiceItem>()
+                    Items = new List<InvoiceItem>(),
+                    LaborCost = laborCost // 🔥 EKLENDİ
                 };
 
                 await _unitOfWork.Invoices.AddAsync(invoice);
@@ -218,7 +219,7 @@ namespace Application.Services
                     });
                 }
 
-                invoice.Total = total + laborCost;
+                invoice.Total = total + laborCost; // 🔥 İŞÇİLİK toplam hesaplandı
             }
 
             await _unitOfWork.CommitAsync();

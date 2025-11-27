@@ -19,10 +19,13 @@ public class InvoiceController : UserBaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Details(int id)
+    public async Task<IActionResult> Details(int id,  string? returnUrl)
     {
         var invoice = await _invoiceService.GetByIdAsync(id);
         if (invoice == null) return NotFound();
+
+        ViewBag.ReturnUrl = returnUrl ?? Url.Action("Index", "Invoice", new { area = "User" });
+
 
         return View(invoice);
     }

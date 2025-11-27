@@ -27,12 +27,13 @@
 
         <!-- Ekleme ve Geri Dön -->
         <div class="m-2 ">
-            <a asp-action="Create" asp-route-actId="@ViewBag.ActId"
-               class="btn btn-primary btn-sm me-2 shadow-sm">
-                <i class="bi bi-plus-circle me-1"></i> Yeni Araç
-            </a>
+           
             @if (ViewBag.ActId != null)
             {
+                <a asp-action="Create" asp-route-actId="@ViewBag.ActId"
+                   class="btn btn-primary btn-sm me-2 shadow-sm">
+                    <i class="bi bi-plus-circle me-1"></i> Yeni Araç
+                </a>
                 <a asp-area="Admin" asp-controller="Act" asp-action="Details" asp-route-id="@ViewBag.ActId"
                    class="btn btn-secondary btn-sm shadow-sm">
                     <i class="bi bi-arrow-left-circle me-1"></i> Müşteriye Dön

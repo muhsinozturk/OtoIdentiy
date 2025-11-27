@@ -100,9 +100,14 @@
                                                 if (o.HasInvoice)
                                                 {
                                                     <a asp-action="Details" asp-controller="Invoice" asp-route-id="@o.InvoiceId"
+                                                     asp-route-returnUrl="@Context.Request.Path"
                                                        class="btn btn-outline-success" title="Fatura Detayı">
                                                         <i class="bi bi-file-earmark-text">Fatura Detayı</i>
                                                     </a>
+
+                           
+
+
                                                 }
                                                 else
                                                 {

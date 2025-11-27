@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ public class CreateWorkOrderDto
     public DateTime OpenDate { get; set; }
     public DateTime? CloseDate { get; set; }
   public decimal LaborCost { get; set; }
+
+    [Required(ErrorMessage = "Açıklama boş bırakılamaz.")]
     public string Description { get; set; }
   
 }

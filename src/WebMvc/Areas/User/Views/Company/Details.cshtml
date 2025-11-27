@@ -1,0 +1,213 @@
+﻿@model Application.DTOs.Company.CompanyDto
+
+<div class="container-fluid px-0 mt-4">
+
+    <!-- ⭐ Şirket Başlık -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold text-primary mb-0">
+            <i class="bi bi-building me-2"></i> @Model.Name
+            <span class="text-muted fs-6">| Yönetim Paneli</span>
+        </h3>
+
+        <a asp-action="Index" class="btn btn-secondary shadow-sm">
+            <i class="bi bi-arrow-left-circle me-1"></i> Geri
+        </a>
+    </div>
+
+
+    <div class="row g-3">
+
+        <!-- Çalışanlar -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-people-fill fs-1 text-primary mb-2"></i>
+                    <h5 class="fw-semibold mb-2">Çalışanlar</h5>
+                    <p class="text-muted small">Şirket personellerini görüntüle</p>
+
+                    <a asp-area="User"
+                       asp-controller="Employee"
+                       asp-action="Index"
+                       asp-route-companyId="@Model.Id"
+                       class="btn btn-outline-primary btn-sm px-4 w-100">
+                        Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Müşteriler -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-person-vcard fs-1 text-success mb-2"></i>
+                    <h5 class="fw-semibold mb-2">Müşteriler</h5>
+                    <p class="text-muted small">Kayıtlı müşterileri görüntüle</p>
+
+                    <a asp-area="User"
+                       asp-controller="Act"
+                       asp-action="Index"
+                       asp-route-companyId="@Model.Id"
+                       class="btn btn-outline-success btn-sm px-4 w-100">
+                        Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Araçlar -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-car-front-fill fs-1 text-warning mb-2"></i>
+                    <h5 class="fw-semibold mb-2">Araçlar</h5>
+                    <p class="text-muted small">Müşteri araçlarını görüntüle</p>
+
+                    <a asp-area="User"
+                       asp-controller="Vehicle"
+                       asp-action="Index"
+                       asp-route-companyId="@Model.Id"
+                       class="btn btn-outline-warning btn-sm px-4 w-100">
+                        Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- İş Emirleri -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-wrench-adjustable-circle fs-1 text-danger mb-2"></i>
+                    <h5 class="fw-semibold mb-2">İş Emirleri</h5>
+                    <p class="text-muted small">Tüm iş emirlerini görüntüle</p>
+
+                    <a asp-area="User"
+                       asp-controller="WorkOrder"
+                       asp-action="Index"
+                       asp-route-companyId="@Model.Id"
+                       class="btn btn-outline-danger btn-sm px-4 w-100">
+                        Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Depolar -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-archive-fill fs-1 text-info mb-2"></i>
+                    <h5 class="fw-semibold mb-2">Depolar</h5>
+                    <p class="text-muted small">Depo ve envanter yönetimi</p>
+
+                    <a asp-area="User"
+                       asp-controller="Depot"
+                       asp-action="Index"
+                       asp-route-companyId="@Model.Id"
+                       class="btn btn-outline-info btn-sm px-4 w-100">
+                        Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stok Grupları -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-grid-3x3-gap-fill fs-1 text-secondary mb-2"></i>
+                    <h5 class="fw-semibold mb-2">Stok Grupları</h5>
+                    <p class="text-muted small">Kategorileri görüntüle</p>
+
+                    <a asp-area="User"
+                       asp-controller="StockGroup"
+                       asp-action="Index"
+                       asp-route-companyId="@Model.Id"
+                       class="btn btn-outline-secondary btn-sm px-4 w-100">
+                        Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stok Kartları -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-box-seam fs-1 text-primary mb-2"></i>
+                    <h5 class="fw-semibold mb-2">Stok Kartları</h5>
+                    <p class="text-muted small">Stok tanımlarını görüntüle</p>
+
+                    <a asp-area="User"
+                       asp-controller="Stock"
+                       asp-action="Index"
+                       asp-route-companyId="@Model.Id"
+                       class="btn btn-outline-primary btn-sm px-4 w-100">
+                        Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fiyat Tipleri -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-tags-fill fs-1 text-dark mb-2"></i>
+                    <h5 class="fw-semibold mb-2">Fiyat Tipleri</h5>
+                    <p class="text-muted small">Stok fiyatlarını yönet</p>
+
+                    <a asp-area="User"
+                       asp-controller="StockPriceType"
+                       asp-action="Index"
+                       asp-route-companyId="@Model.Id"
+                       class="btn btn-outline-dark btn-sm px-4 w-100">
+                        Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stok Hareketleri -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-arrow-left-right fs-1 text-success mb-2"></i>
+                    <h5 class="fw-semibold mb-2">Stok Giriş / Çıkış</h5>
+                    <p class="text-muted small">Tüm hareketleri görüntüle</p>
+
+                    <a asp-area="User"
+                       asp-controller="Inventory"
+                       asp-action="Index"
+                       asp-route-companyId="@Model.Id"
+                       class="btn btn-outline-success btn-sm px-4 w-100">
+                        Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Faturalar -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-receipt fs-1 text-danger mb-2"></i>
+                    <h5 class="fw-semibold mb-2">Faturalar</h5>
+                    <p class="text-muted small">Kesilen faturaları görüntüle</p>
+
+                    <a asp-area="User"
+                       asp-controller="Invoice"
+                       asp-action="Index"
+                       asp-route-companyId="@Model.Id"
+                       class="btn btn-outline-danger btn-sm px-4 w-100">
+                        Görüntüle
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>

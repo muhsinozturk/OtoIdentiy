@@ -58,9 +58,9 @@
                         <img src="~/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block fw-semibold">Muhsin Öztürk</a>
+                        <a href="#" class="d-block fw-semibold">@User.Identity.Name</a>
 
-                   
+
                     </div>
                 </div>
 
@@ -89,37 +89,8 @@
                                 <p>Dashboard</p>
                             </a>
                         </li>
-                       
-                        <!-- Şirketler -->
-                        <li class="nav-item">
-                            <a href="/Admin/Company/Index" class="nav-link">
-                                <i class="nav-icon fas fa-building"></i>
-                                <p>Şirketler</p>
-                            </a>
-                        </li>
-
-                        <!-- Personeller -->
-                        <li class="nav-item">
-                            <a href="/Admin/Employee/Index" class="nav-link">
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>Personeller</p>
-                            </a>
-                        </li>
-
-                        <!-- Müşteriler -->
-                        <li class="nav-item">
-                            <a href="/Admin/Act/Index" class="nav-link">
-                                <i class="nav-icon fas fa-user-tie"></i>
-                                <p>Müşteriler</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="/Admin/VEhicle/Index" class="nav-link">
-                                <i class="nav-icon fas fa-user-tie"></i>
-                                <p>Araçlar</p>
-                            </a>
-                        </li>
+      
+                        
                         <li class="nav-item has-treeview menu-open">
                             <!-- ✅ Menü açık kalsın -->
                             <a href="#" class="nav-link">
@@ -132,12 +103,7 @@
 
 
                             <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/Admin/Roles/RoleCreate" class="nav-link">
-                                        <i class="bi bi-tags nav-icon"></i>
-                                        <p>Rol Oluştur</p>
-                                    </a>
-                                </li>
+                                
                                 <li class="nav-item">
                                     <a href="/Admin/User/Index" class="nav-link">
                                         <i class="bi bi-tags nav-icon"></i>
@@ -159,79 +125,10 @@
                                 </li>
                             </ul>
                         </li>
-                        <!-- Stok Yönetimi -->
-                        <li class="nav-item has-treeview menu-open">
-                            <!-- ✅ Menü açık kalsın -->
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-boxes"></i>
-                                <p>
-                                    Stok Yönetimi
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/Admin/StockGroup/Index" class="nav-link">
-                                        <i class="bi bi-tags nav-icon"></i>
-                                        <p>Stok Grupları</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/Admin/Stock/Index" class="nav-link">
-                                        <i class="bi bi-box-seam nav-icon"></i>
-                                        <p>Stok Kartları</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/Admin/StockPriceType/Index" class="nav-link">
-                                        <i class="bi bi-cash-stack nav-icon"></i>
-                                        <p>Fiyat Tipleri</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                      
 
-                        <!-- Depo & Envanter -->
-                        <li class="nav-item has-treeview menu-open">
-                            <!-- ✅ Menü açık kalır -->
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-warehouse"></i>
-                                <p>
-                                    Depo / Envanter
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/Admin/Depot/Index" class="nav-link">
-                                        <i class="bi bi-house-door nav-icon"></i>
-                                        <p>Depolar</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/Admin/Inventory/Index" class="nav-link">
-                                        <i class="bi bi-archive nav-icon"></i>
-                                        <p>Stok Giriş/Çıkış</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-               
-                        <!-- İş Emirleri -->
-                        <li class="nav-item">
-                            <a href="/Admin/WorkOrder/Index" class="nav-link">
-                                <i class="nav-icon fas fa-tools"></i>
-                                <p>İş Emirleri</p>
-                            </a>
-                        </li>
-
-                        <!-- Tüm Faturalar -->
-                        <li class="nav-item">
-                            <a href="/Admin/Invoice/Index" class="nav-link">
-                                <i class="nav-icon fas fa-tools"></i>
-                                <p>Tüm Faturalar</p>
-                            </a>
-                        </li>
+                       
+                       
 
 
                     </ul>
